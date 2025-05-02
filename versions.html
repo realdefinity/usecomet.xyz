@@ -43,37 +43,61 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .particles {
+    .cosmic-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
-      pointer-events: none;
+      z-index: -2;
+      overflow: hidden;
     }
 
-    .particle {
+    .star {
       position: absolute;
       width: 2px;
       height: 2px;
-      background: rgba(255, 255, 255, 0.5);
+      background: white;
       border-radius: 50%;
-      animation: float 15s infinite linear;
+      animation: float 15s infinite ease-in-out;
+      will-change: transform;
+    }
+
+    .comet {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px rgba(255,255,255,0.8);
+      z-index: -1;
+      opacity: 0;
+      animation-timing-function: linear;
+    }
+
+    .comet::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0;
+      width: 300px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+      transform: translateY(-50%);
     }
 
     .version-container {
       width: 90%;
       max-width: 1000px;
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-radius: 28px;
       padding: 2.5rem;
       box-shadow: 
-        0 12px 30px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(123, 45, 255, var(--glow-intensity));
-      border: 1px solid rgba(255, 255, 255, 0.1);
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(123, 45, 255, var(--glow-intensity));
+      border: 1px solid rgba(255, 255, 255, 0.15);
       position: relative;
       overflow: hidden;
       transform-style: preserve-3d;
@@ -89,9 +113,9 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(123, 45, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      background: radial-gradient(circle, rgba(106,17,203,0.2) 0%, rgba(0,0,0,0) 70%);
       z-index: -1;
-      animation: rotate 20s linear infinite;
+      animation: rotate 30s linear infinite;
     }
 
     .version-container::after {
@@ -99,8 +123,8 @@
       position: absolute;
       inset: 0;
       border-radius: 28px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(0, 162, 255, 0.5), rgba(123, 45, 255, 0.5));
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(106,17,203,0.6), rgba(37,117,252,0.6));
       -webkit-mask: 
         linear-gradient(#fff 0 0) content-box, 
         linear-gradient(#fff 0 0);
@@ -117,25 +141,44 @@
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      letter-spacing: 1px;
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      letter-spacing: 2px;
       line-height: 1.2;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 4px;
+      opacity: 0.7;
     }
 
     .live-status {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
+      margin: 0.5rem auto 1.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 60, 95, 0.15);
+      border-radius: 50px;
       font-family: var(--font-primary);
-      font-size: 1.1rem;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       position: relative;
-      width: fit-content;
+      overflow: hidden;
+      border: 1px solid rgba(255, 60, 95, 0.3);
     }
 
     .live-pulse {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: var(--accent-color);
       margin-right: 8px;
@@ -146,10 +189,10 @@
     .live-pulse::before {
       content: '';
       position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
       border-radius: 50%;
       border: 2px solid var(--accent-color);
       opacity: 0;
@@ -170,9 +213,9 @@
     }
 
     .version-card {
-      background: rgba(30, 41, 59, 0.5);
-      border-radius: 18px;
-      padding: 1.5rem;
+      background: rgba(30, 41, 59, 0.6);
+      border-radius: 20px;
+      padding: 1.75rem;
       display: flex;
       flex-direction: column;
       transition: all var(--transition-duration) var(--easing);
@@ -181,15 +224,15 @@
       overflow: hidden;
       transform-style: preserve-3d;
       will-change: transform;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
     .version-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      background: rgba(30, 41, 59, 0.7);
-      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .version-card::before {
@@ -200,8 +243,8 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(45deg, 
-        rgba(0, 162, 255, 0.15), 
-        rgba(123, 45, 255, 0.15));
+        rgba(0, 162, 255, 0.2), 
+        rgba(123, 45, 255, 0.2));
       z-index: -1;
       opacity: 0;
       transition: opacity var(--transition-duration) var(--easing);
@@ -214,7 +257,7 @@
     .platform-header {
       display: flex;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       justify-content: space-between;
     }
 
@@ -224,40 +267,40 @@
     }
 
     .platform-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 1rem;
-      font-size: 1.5rem;
-      background: linear-gradient(135deg, rgba(0, 162, 255, 0.2), rgba(123, 45, 255, 0.2));
+      margin-right: 1.25rem;
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, rgba(0, 162, 255, 0.25), rgba(123, 45, 255, 0.25));
       color: white;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       transition: all var(--transition-duration) var(--easing);
     }
 
     .version-card:hover .platform-icon {
-      transform: rotate(10deg) scale(1.1);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      transform: rotate(15deg) scale(1.15);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     }
 
     .platform-title {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.4rem;
+      font-weight: 700;
       color: var(--text-color);
       font-family: var(--font-secondary);
     }
 
     .version-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
 
     .download-btn, .copy-btn {
-      width: 36px;
-      height: 36px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -267,7 +310,8 @@
       cursor: pointer;
       transition: all var(--transition-duration) var(--easing);
       position: relative;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 2;
     }
 
     .download-btn {
@@ -279,33 +323,36 @@
     }
 
     .download-btn:hover, .copy-btn:hover {
-      transform: translateY(-3px) scale(1.1);
-      box-shadow: 0 8px 20px rgba(0, 162, 255, 0.4);
+      transform: translateY(-5px) scale(1.15);
+      box-shadow: 0 12px 25px rgba(0, 162, 255, 0.5);
     }
 
     .download-btn:active, .copy-btn:active {
-      transform: translateY(1px);
+      transform: translateY(0) scale(0.95);
     }
 
     .download-btn::after, .copy-btn::after {
       content: attr(data-tooltip);
       position: absolute;
-      top: -40px;
+      top: -45px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.9);
       color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 0.8rem;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 0.85rem;
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--transition-duration);
+      transition: all var(--transition-duration);
+      z-index: 10;
+      min-width: max-content;
     }
 
     .download-btn:hover::after, .copy-btn:hover::after {
       opacity: 1;
+      transform: translateX(-50%) translateY(-5px);
     }
 
     .version-info {
@@ -313,87 +360,98 @@
     }
 
     .version-label {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
     }
 
     .version-display {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      border-left: 3px solid var(--primary-color);
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      border-left: 4px solid var(--primary-color);
       transition: all var(--transition-duration) var(--easing);
       overflow: hidden;
+      position: relative;
     }
 
     .version-card:hover .version-display {
       border-left-color: var(--accent-color);
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
     }
 
     .version-value {
       font-family: var(--font-primary);
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: var(--text-color);
       word-break: break-all;
-      padding: 0.75rem;
+      padding: 1rem;
       flex-grow: 1;
     }
 
-    .version-history {
-      margin-top: 1.5rem;
-      border-top: 1px dashed rgba(255, 255, 255, 0.1);
-      padding-top: 1rem;
-    }
-
-    .history-item {
+    .refresh-container {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .history-version {
-      font-family: var(--font-primary);
-      color: var(--text-color);
-    }
-
-    .history-date {
-      color: var(--text-muted);
+      justify-content: center;
+      margin-top: 3rem;
+      position: relative;
     }
 
     .refresh-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 2rem auto 0;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2rem;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       border: none;
       border-radius: 50px;
       font-family: var(--font-secondary);
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1.1rem;
       cursor: pointer;
       transition: all var(--transition-duration) var(--easing);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(100, 108, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
     }
 
     .refresh-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 162, 255, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(100, 108, 255, 0.3);
     }
 
     .refresh-btn:active {
-      transform: translateY(1px);
+      transform: translateY(0);
+    }
+
+    .refresh-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      opacity: 0;
+      transition: opacity var(--transition-duration) var(--easing);
+      z-index: -1;
+    }
+
+    .refresh-btn:hover::before {
+      opacity: 1;
     }
 
     .refresh-btn i {
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
       transition: transform var(--transition-duration) var(--easing);
     }
 
@@ -420,52 +478,50 @@
         rgba(255, 255, 255, 0.1),
         transparent
       );
-      animation: loadingShimmer 1.5s infinite;
+      animation: loadingShimmer 2s infinite;
       z-index: 1;
-    }
-
-    /* Error state */
-    .error {
-      color: #ff4757;
     }
 
     /* Success notification */
     .notification {
       position: fixed;
-      bottom: 20px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.9);
       color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1rem;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
       z-index: 100;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
     }
 
     .notification.show {
       opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
     }
 
     /* Animations */
     @keyframes livePulse {
       0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.2); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 1; }
     }
 
     @keyframes livePulseRing {
-      0% { transform: scale(0.5); opacity: 0; }
-      50% { opacity: 0.5; }
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { opacity: 0.6; }
       100% { transform: scale(1.5); opacity: 0; }
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
     }
 
     @keyframes rotate {
@@ -474,7 +530,7 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -483,30 +539,60 @@
       100% { transform: translateX(100%); }
     }
 
+    @keyframes cometFly {
+      0% { transform: translateX(-100px) translateY(-100px) rotate(45deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); opacity: 0; }
+    }
+
+    @keyframes cometFly2 {
+      0% { transform: translateX(-150px) translateY(100px) rotate(-30deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(100vw) translateY(-100px) rotate(-30deg); opacity: 0; }
+    }
+
     /* Floating animation for container */
     @keyframes gentleFloat {
       0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
-      50% { transform: translateY(-10px) rotateX(2deg) rotateY(2deg); }
+      50% { transform: translateY(-15px) rotateX(3deg) rotateY(3deg); }
     }
 
     .version-container {
-      animation: gentleFloat 8s ease-in-out infinite;
+      animation: gentleFloat 10s ease-in-out infinite;
     }
 
     /* Glow effect on hover */
     .version-container:hover {
-      --glow-intensity: 0.15;
+      --glow-intensity: 0.2;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
       .version-container {
-        padding: 1.5rem;
-        border-radius: 20px;
+        padding: 1.75rem;
+        border-radius: 24px;
       }
       
       .version-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .platform-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+      
+      .download-btn, .copy-btn {
+        width: 38px;
+        height: 38px;
+      }
+      
+      .download-btn::after, .copy-btn::after {
+        top: -50px;
+        font-size: 0.8rem;
       }
     }
 
@@ -542,7 +628,7 @@
   </style>
 </head>
 <body>
-  <div class="particles" id="particles"></div>
+  <div class="cosmic-bg" id="cosmic-bg"></div>
   <div class="notification" id="notification">Copied to clipboard!</div>
   
   <div class="version-container">
@@ -590,64 +676,109 @@
       </div>
     </div>
     
-    <button class="refresh-btn" id="refresh-btn">
-      <i class="fas fa-sync-alt"></i> Refresh Versions
-    </button>
+    <div class="refresh-container">
+      <button class="refresh-btn" id="refresh-btn">
+        <i class="fas fa-sync-alt"></i> Refresh Versions
+      </button>
+    </div>
   </div>
 
   <script>
     class RobloxVersionTracker {
       constructor() {
-        this.particleCount = 100;
+        this.starCount = window.innerWidth < 768 ? 100 : 200;
         this.versionData = {
           windows: {
             current: null,
-            previous: null,
             lastUpdated: null,
             loading: true,
             error: false
           },
           mac: {
             current: null,
-            previous: null,
             lastUpdated: null,
             loading: true,
             error: false
           }
         };
         
-        // Use CORS proxy to bypass restrictions
-        this.proxyUrl = 'https://api.allorigins.win/raw?url=';
+        // Multiple proxy endpoints for reliability
+        this.proxyEndpoints = [
+          'https://api.allorigins.win/raw?url=',
+          'https://cors-anywhere.herokuapp.com/',
+          'https://thingproxy.freeboard.io/fetch/'
+        ];
+        this.currentProxyIndex = 0;
+        
         this.init();
       }
       
       init() {
-        this.createParticles();
+        this.createCosmicBackground();
         this.setupEventListeners();
         this.fetchAllVersions();
         this.updateLastUpdated();
+        this.startCometInterval();
       }
       
-      createParticles() {
-        const particlesContainer = document.getElementById('particles');
+      createCosmicBackground() {
+        const cosmicBg = document.getElementById('cosmic-bg');
         const fragment = document.createDocumentFragment();
         
-        for (let i = 0; i < this.particleCount; i++) {
-          const particle = document.createElement('div');
-          particle.className = 'particle';
+        // Create stars
+        for (let i = 0; i < this.starCount; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
           
-          particle.style.left = `${Math.random() * 100}%`;
-          particle.style.top = `${Math.random() * 100}%`;
-          particle.style.opacity = Math.random() * 0.5;
-          particle.style.width = `${1 + Math.random() * 2}px`;
-          particle.style.height = particle.style.width;
-          particle.style.animationDelay = `${Math.random() * 15}s`;
-          particle.style.animationDuration = `${10 + Math.random() * 20}s`;
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          star.style.opacity = Math.random();
+          const size = 1 + Math.random() * 2;
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.animationDelay = `${Math.random() * 5}s`;
+          star.style.animationDuration = `${5 + Math.random() * 15}s`;
           
-          fragment.appendChild(particle);
+          fragment.appendChild(star);
         }
         
-        particlesContainer.appendChild(fragment);
+        cosmicBg.appendChild(fragment);
+      }
+      
+      createComet() {
+        if (document.hidden) return;
+        
+        const comet = document.createElement('div');
+        comet.className = 'comet';
+        
+        // Random position and animation
+        const leftPos = Math.random() * 20;
+        const topPos = Math.random() * 20;
+        const duration = 10 + Math.random() * 10;
+        const animationType = Math.random() > 0.5 ? 'cometFly' : 'cometFly2';
+        
+        comet.style.left = `${leftPos}%`;
+        comet.style.top = `${topPos}%`;
+        comet.style.animation = `${animationType} ${duration}s linear`;
+        
+        document.body.appendChild(comet);
+        
+        // Auto-remove after animation completes
+        setTimeout(() => {
+          comet.remove();
+        }, duration * 1000);
+      }
+      
+      startCometInterval() {
+        // Initial comet
+        this.createComet();
+        
+        // Schedule comets at random intervals
+        this.cometInterval = setInterval(() => {
+          if (!document.hidden) {
+            this.createComet();
+          }
+        }, 5000 + Math.random() * 10000);
       }
       
       async fetchAllVersions() {
@@ -661,17 +792,9 @@
           
           // Use Promise.all to fetch both versions simultaneously
           const [windowsData, macData] = await Promise.all([
-            this.fetchVersion('WindowsPlayer'),
-            this.fetchVersion('MacPlayer')
+            this.fetchWithFallback('WindowsPlayer'),
+            this.fetchWithFallback('MacPlayer')
           ]);
-          
-          // Store previous versions before updating
-          if (this.versionData.windows.current) {
-            this.versionData.windows.previous = this.versionData.windows.current;
-          }
-          if (this.versionData.mac.current) {
-            this.versionData.mac.previous = this.versionData.mac.current;
-          }
           
           // Update with new data
           this.versionData.windows.current = windowsData.clientVersionUpload;
@@ -693,20 +816,43 @@
           this.versionData.mac.loading = false;
           this.renderVersionCards();
           
-          // Retry after 5 seconds if there's an error
-          setTimeout(() => this.fetchAllVersions(), 5000);
+          // Rotate to next proxy and retry after 3 seconds
+          this.rotateProxy();
+          setTimeout(() => this.fetchAllVersions(), 3000);
         }
       }
       
-      async fetchVersion(platform) {
-        const url = `${this.proxyUrl}${encodeURIComponent(`https://clientsettings.roblox.com/v2/client-version/${platform}`)}`;
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${platform} version`);
+      async fetchWithFallback(platform, retryCount = 0) {
+        const maxRetries = this.proxyEndpoints.length * 2;
+        if (retryCount >= maxRetries) {
+          throw new Error(`Failed to fetch ${platform} version after ${maxRetries} attempts`);
         }
         
-        return await response.json();
+        try {
+          const proxyUrl = this.proxyEndpoints[this.currentProxyIndex];
+          const url = `${proxyUrl}${encodeURIComponent(`https://clientsettings.roblox.com/v2/client-version/${platform}`)}`;
+          
+          const response = await fetch(url, {
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          return await response.json();
+        } catch (error) {
+          console.warn(`Attempt ${retryCount + 1} failed for ${platform}:`, error);
+          this.rotateProxy();
+          return this.fetchWithFallback(platform, retryCount + 1);
+        }
+      }
+      
+      rotateProxy() {
+        this.currentProxyIndex = (this.currentProxyIndex + 1) % this.proxyEndpoints.length;
+        console.log(`Switched to proxy: ${this.proxyEndpoints[this.currentProxyIndex]}`);
       }
       
       renderVersionCards() {
@@ -732,7 +878,7 @@
           const data = this.versionData[platform.id];
           const card = document.createElement('div');
           card.className = `version-card ${data.loading ? 'loading' : ''} ${data.error ? 'error' : ''}`;
-          card.style.animation = 'fadeIn 0.5s ease-out forwards';
+          card.style.animation = 'fadeIn 0.6s ease-out forwards';
           card.style.opacity = '0';
           
           // Determine what to display
@@ -764,6 +910,9 @@
                   <a href="${downloadUrl}" class="download-btn" data-tooltip="Download ${platform.name} version" target="_blank">
                     <i class="fas fa-download"></i>
                   </a>
+                  <button class="copy-btn" data-tooltip="Copy version" data-version="${data.current}">
+                    <i class="far fa-copy"></i>
+                  </button>
                 </div>
               ` : ''}
             </div>
@@ -772,23 +921,8 @@
               <div class="version-label">Current Version</div>
               <div class="version-display">
                 <div class="version-value">${versionDisplay}</div>
-                ${showActions ? `
-                  <button class="copy-btn" data-tooltip="Copy version" data-version="${data.current}">
-                    <i class="far fa-copy"></i>
-                  </button>
-                ` : ''}
               </div>
             </div>
-            
-            ${data.previous && !data.error ? `
-              <div class="version-history">
-                <div class="version-label">Previous Version</div>
-                <div class="history-item">
-                  <span class="history-version">${data.previous}</span>
-                  <span class="history-date">${this.formatDate(data.lastUpdated)}</span>
-                </div>
-              </div>
-            ` : ''}
           `;
           
           versionGrid.appendChild(card);
@@ -854,7 +988,7 @@
       async checkForUpdates() {
         const btn = document.getElementById('refresh-btn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
         
         try {
           await this.fetchAllVersions();
@@ -884,19 +1018,21 @@
         this.handleReducedMotion(reducedMotionQuery);
         reducedMotionQuery.addEventListener('change', this.handleReducedMotion);
         
-        // Auto-refresh every 5 minutes
+        // Auto-refresh every 2 minutes
         setInterval(() => {
           if (!document.hidden) {
             this.fetchAllVersions();
             this.updateLastUpdated();
           }
-        }, 5 * 60 * 1000);
+        }, 2 * 60 * 1000);
       }
       
       handleReducedMotion(query) {
         if (query.matches) {
-          document.querySelectorAll('.particle').forEach(particle => {
-            particle.style.animation = 'none';
+          clearInterval(this.cometInterval);
+          document.querySelectorAll('.comet').forEach(comet => comet.remove());
+          document.querySelectorAll('.star').forEach(star => {
+            star.style.animation = 'none';
           });
         }
       }
