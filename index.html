@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The next generation of exploiting">
+  <title>CometWare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #f72585;
+      --background-color: #0a0a12;
+      --text-color: #f8f9fa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --easing-smooth: cubic-bezier(0.165, 0.84, 0.44, 1);
+      --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      --transition-fast: 0.15s;
+      --transition-medium: 0.3s;
+      --transition-slow: 0.5s;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    #stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+      background: radial-gradient(ellipse at bottom, #1a1a2e 0%, #0d0d0d 100%);
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration, 5s) infinite ease-in-out;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: var(--opacity, 0.8); transform: scale(1); }
+    }
+    
+    /* Enhanced Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(67, 97, 238, 0.15) 0%, transparent 70%);
+      z-index: -1;
+      animation: pulse 15s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.3; }
+      100% { transform: scale(1.2); opacity: 0.1; }
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 50px;
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      background: rgba(10, 10, 18, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      transform-style: preserve-3d;
+      will-change: transform;
+      animation: fadeIn 1s ease-out forwards;
+      transition: all var(--transition-medium) var(--easing-smooth);
+    }
+    .hero-content:hover {
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-logo {
+      width: 400px;
+      height: auto;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: all 0.5s var(--easing-smooth);
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      animation: logoReveal 1.2s var(--easing-smooth) 0.3s forwards;
+      cursor: pointer;
+    }
+    .hero-logo:hover {
+      transform: translateY(-5px) scale(1.03);
+      filter: drop-shadow(0 15px 30px rgba(67, 97, 238, 0.4));
+    }
+    .hero-logo:active {
+      transform: translateY(0) scale(0.98);
+    }
+    @keyframes logoReveal {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hero-subtext {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      letter-spacing: 2px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s var(--easing-smooth) 0.8s forwards;
+      font-weight: 500;
+      margin-top: 20px;
+      position: relative;
+      transition: all var(--transition-medium) var(--easing-smooth);
+    }
+    .hero-subtext:hover {
+      text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+    }
+    .hero-subtext::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: 3px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out 1.5s forwards;
+      transition: all var(--transition-medium) var(--easing-smooth);
+    }
+    .hero-subtext:hover::after {
+      width: 120px;
+      height: 4px;
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 0.6; }
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 150px auto;
+      padding: 40px 20px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s var(--easing-smooth);
+    }
+    .section-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-container h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 60px;
+      position: relative;
+      display: inline-block;
+    }
+    .section-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: 3px;
+    }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      perspective: 1000px;
+    }
+    .card {
+      width: 320px;
+      height: 220px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform var(--transition-fast) linear, box-shadow var(--transition-medium) var(--easing-smooth);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      transition: all 0.6s var(--easing-smooth);
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+      z-index: 1;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), transparent);
+      opacity: 0;
+      transition: opacity var(--transition-medium) var(--easing-smooth);
+    }
+    .card:hover {
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+      transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .card:hover::after {
+      opacity: 1;
+    }
+    .card-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
+      transition: transform var(--transition-medium) var(--easing-smooth);
+    }
+    .card:hover .card-title {
+      transform: scale(1.05);
+    }
+    .card-icon {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      opacity: 0.5;
+      transition: all var(--transition-medium) var(--easing-smooth);
+      z-index: 2;
+    }
+    .card:hover .card-icon {
+      opacity: 0.9;
+      transform: scale(1.2);
+    }
+    .premium-button-container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+    }
+    
+    /* Download Buttons */
+    .download-button {
+      position: relative;
+      width: 280px;
+      height: 80px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: none;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      text-decoration: none !important;
+      cursor: pointer;
+    }
+    .download-button.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .download-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+      z-index: 1;
+    }
+    .download-button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 1;
+    }
+    .download-button:hover {
+      transform: translateY(-5px) scale(1.03) translateZ(0);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    .download-button:active {
+      transform: translateY(0) scale(0.98) translateZ(0);
+    }
+    .download-button .button-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-right: 18px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 2;
+      font-size: 1.2rem;
+    }
+    .download-button:hover .button-icon {
+      transform: scale(1.15) translateZ(0);
+    }
+    .download-button .button-text {
+      text-align: left;
+      z-index: 2;
+    }
+    .download-button .button-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      transition: all 0.2s ease-out;
+      color: white;
+    }
+    .download-button .button-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: all 0.2s ease-out;
+      color: white;
+      font-weight: 400;
+    }
+    .download-button:hover .button-title {
+      transform: translateX(3px) translateZ(0);
+    }
+    .download-button:hover .button-subtitle {
+      opacity: 1;
+    }
+    
+    /* Script button design */
+    .script-button {
+      background: linear-gradient(135deg, rgba(101, 73, 255, 0.2), rgba(101, 73, 255, 0.1));
+      border: 1px solid rgba(101, 73, 255, 0.3);
+    }
+    .script-button .button-icon {
+      background: rgba(101, 73, 255, 0.3);
+      color: #b5a6ff;
+    }
+    .script-button:hover {
+      box-shadow: 0 15px 35px rgba(101, 73, 255, 0.25);
+    }
+    .script-button:hover::after {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba(101, 73, 255, 0.2), transparent);
+    }
+    .script-button:hover .button-icon {
+      background: rgba(101, 73, 255, 0.4);
+      transform: rotate(5deg) scale(1.15) translateZ(0);
+      box-shadow: 0 0 15px rgba(181, 166, 255, 0.3);
+    }
+    
+    /* Premium button design */
+    .premium-button-main {
+      background: linear-gradient(135deg, rgba(255, 179, 71, 0.2), rgba(255, 179, 71, 0.1));
+      border: 1px solid rgba(255, 179, 71, 0.3);
+    }
+    .premium-button-main .button-icon {
+      background: rgba(255, 179, 71, 0.3);
+      color: #ffd8a6;
+    }
+    .premium-button-main:hover {
+      box-shadow: 0 15px 35px rgba(255, 179, 71, 0.25);
+    }
+    .premium-button-main:hover::after {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba(255, 179, 71, 0.2), transparent);
+    }
+    .premium-button-main:hover .button-icon {
+      background: rgba(255, 179, 71, 0.4);
+      animation: pulseGold 0.8s infinite alternate;
+    }
+    @keyframes pulseGold {
+      0% { transform: scale(1) translateZ(0); box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.4); }
+      100% { transform: scale(1.15) translateZ(0); box-shadow: 0 0 0 8px rgba(255, 179, 71, 0); }
+    }
+    
+    /* Enhanced Top Navigation Buttons */
+    .top-nav-buttons {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      display: flex;
+      gap: 15px;
+      z-index: 100;
+      will-change: transform;
+    }
+    .top-button {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border: 1px solid transparent;
+      transform: translateZ(0);
+      will-change: transform, box-shadow, background;
+      transition: 
+        transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+        box-shadow 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+        background 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+      opacity: 0;
+      transform: translateY(-20px);
+      text-decoration: none !important;
+    }
+    .top-button.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .top-button i {
+      margin-right: 8px;
+      transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    
+    /* Premium Status Button Design */
+    .status-button {
+      background: rgba(30, 30, 30, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition-delay: 0.1s;
+      position: relative;
+      overflow: hidden;
+      padding-left: 15px;
+    }
+    .status-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: #4CAF50;
+      transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+      z-index: -1;
+    }
+    }
+    @keyframes pulseStatus {
+      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    }
+    .status-button:hover {
+      background: rgba(40, 40, 40, 0.5);
+      transform: translateY(-3px) translateZ(0);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .status-button:hover::before {
+      width: 100%;
+      opacity: 0.15;
+    }
+    }
+    }
+    .status-button i {
+      margin-left: 12px;
+      color: #4CAF50;
+    }
+
+    /* Executors button - enhanced */
+    .executors-button {
+      background: rgba(67, 97, 238, 0.2);
+      border: 1px solid rgba(67, 97, 238, 0.3);
+      color: #aab7ff;
+      transition-delay: 0.2s;
+    }
+    .executors-button:hover {
+      background: rgba(67, 97, 238, 0.3);
+      transform: translateY(-3px) translateZ(0);
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+    }
+    .executors-button:hover i {
+      transform: scale(1.15) translateZ(0);
+      color: #ffffff;
+      animation: boltPulse 0.5s ease-out;
+    }
+    @keyframes boltPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1.15); }
+    }
+
+    /* Disabled Executors Button */
+    .executors-button.disabled {
+      background: rgba(67, 97, 238, 0.1) !important;
+      border: 1px solid rgba(67, 97, 238, 0.1) !important;
+      color: rgba(170, 183, 255, 0.5) !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+      position: relative;
+      overflow: hidden;
+    }
+    .executors-button.disabled::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 5px,
+        rgba(255,255,255,0.03) 5px,
+        rgba(255,255,255,0.03) 10px
+      );
+      pointer-events: none;
+    }
+    .executors-button.disabled i {
+      color: rgba(170, 183, 255, 0.3) !important;
+    }
+
+    /* Discord button - enhanced */
+    .discord-button {
+      background: rgba(114, 137, 218, 0.2);
+      border: 1px solid rgba(114, 137, 218, 0.3);
+      color: #b8c4ff;
+      transition-delay: 0.3s;
+    }
+    .discord-button:hover {
+      background: rgba(114, 137, 218, 0.3);
+      transform: translateY(-3px) translateZ(0);
+      box-shadow: 0 8px 20px rgba(114, 137, 218, 0.2);
+    }
+    .discord-button:hover i {
+      transform: scale(1.15) translateZ(0);
+      color: #ffffff;
+      animation: discordFloat 1.5s ease-in-out infinite;
+    }
+    @keyframes discordFloat {
+      0%, 100% { transform: translateY(0) scale(1.15); }
+      50% { transform: translateY(-3px) scale(1.15); }
+    }
+
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all var(--transition-medium) var(--easing-smooth);
+      backdrop-filter: blur(10px);
+      z-index: 90;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    #backToTop:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px) scale(1.1);
+    }
+    #backToTop.show {
+      opacity: 1;
+    }
+    @media (max-width: 1024px) {
+      .top-nav-buttons {
+        right: 15px;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 768px) {
+      .hero-logo { width: 300px; }
+      .hero-content {
+        padding: 30px;
+      }
+      .card { width: 280px; height: 180px; }
+      .download-button { width: 100%; max-width: 280px; }
+      .top-button {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+      }
+      .status-button {
+        padding-left: 12px;
+      }
+      .status-indicator {
+        left: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      .hero-logo { width: 250px; }
+      .hero-content {
+        padding: 20px;
+        width: 90%;
+      }
+      .top-nav-buttons {
+        gap: 8px;
+      }
+      .top-button {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+      .premium-button-container { flex-direction: column; align-items: center; }
+      .status-button {
+        padding-left: 10px;
+      }
+      .status-indicator {
+        left: 10px;
+        width: 8px;
+        height: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="stars-container"></div>
+  
+  <div class="top-nav-buttons">
+    <a class="top-button status-button" href="https://sites.google.com/view/sigmacheatz/status" target="_blank">
+      <span class="status-indicator"></span>
+      <i class="fas fa-circle-notch"></i> Status
+    </a>
+    <a class="top-button executors-button disabled" href="https://sites.google.com/view/sigmacheatz/executors" target="_blank">
+      <i class="fas fa-bolt"></i> Executors
+    </a>
+    <a class="top-button discord-button" href="https://discord.gg/qeFQ57eqtj" target="_blank">
+      <i class="fab fa-discord"></i> Discord
+    </a>
+  </div>
+  
+  <section class="hero">
+    <div class="hero-content">
+      <img src="https://i.imgur.com/UQFupYL.png" alt="CometWare Logo" class="hero-logo" id="logoClick">
+      <p class="hero-subtext">The next generation of exploiting</p>
+    </div>
+  </section>
+  
+  <section id="features" class="section-container">
+    <h2>Features</h2>
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-title">Optimized</div>
+        <div class="card-icon"><i class="fas fa-bolt"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">High Performance</div>
+        <div class="card-icon"><i class="fas fa-tachometer-alt"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Accessible</div>
+        <div class="card-icon"><i class="fas fa-universal-access"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Clean UI</div>
+        <div class="card-icon"><i class="fas fa-paint-brush"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Community Support</div>
+        <div class="card-icon"><i class="fas fa-users"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Premium Quality</div>
+        <div class="card-icon"><i class="fas fa-crown"></i></div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="games" class="section-container">
+    <h2>Supported Games</h2>
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-title">Bedwars</div>
+        <div class="card-icon"><i class="fas fa-bed"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Arsenal</div>
+        <div class="card-icon"><i class="fas fa-gun"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Rivals</div>
+        <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="executors" class="section-container">
+    <h2>Recommended Executors</h2>
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-title">AWP.gg</div>
+        <div class="card-icon"><i class="fas fa-rocket"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Zenith</div>
+        <div class="card-icon"><i class="fas fa-code"></i></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Swift</div>
+        <div class="card-icon"><i class="fas fa-cog"></i></div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section-container" id="download-section">
+    <div class="premium-button-container">
+      <a href="https://sites.google.com/view/sigmacheatz/script" class="download-button script-button" target="_blank">
+        <div class="button-icon">
+          <i class="fas fa-file-code"></i>
+        </div>
+        <div class="button-text">
+          <div class="button-title">Get Script</div>
+          <div class="button-subtitle">Free Version</div>
+        </div>
+      </a>
+      
+      <a href="https://sites.google.com/view/sigmacheatz/premium" class="download-button premium-button-main" target="_blank">
+        <div class="button-icon">
+          <i class="fas fa-crown"></i>
+        </div>
+        <div class="button-text">
+          <div class="button-title">Premium</div>
+          <div class="button-subtitle">Unlock Full Potential</div>
+        </div>
+      </a>
+    </div>
+  </section>
+  
+  <div style="height: 100px;"></div>
+  
+  <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+  <script>
+    // Performance optimization - throttle expensive operations
+    function throttle(func, limit) {
+      let lastFunc;
+      let lastRan;
+      return function() {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+          func.apply(context, args);
+          lastRan = Date.now();
+        } else {
+          clearTimeout(lastFunc);
+          lastFunc = setTimeout(function() {
+            if ((Date.now() - lastRan) >= limit) {
+              func.apply(context, args);
+              lastRan = Date.now();
+            }
+          }, limit - (Date.now() - lastRan));
+        }
+      };
+    }
+
+    function createStars() {
+      const container = document.getElementById('stars-container');
+      if (!container) return;
+      
+      // Calculate star count based on screen size but cap it
+      const starCount = Math.min(Math.floor(window.innerWidth * window.innerHeight / 2000), 250);
+      const existingStars = container.querySelectorAll('.star').length;
+      
+      if (existingStars >= starCount) return;
+      
+      // Use document fragment for better performance
+      const fragment = document.createDocumentFragment();
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.width = star.style.height = `${0.5 + Math.random() * 1.5}px`;
+        star.style.setProperty('--opacity', 0.2 + Math.random() * 0.6);
+        star.style.setProperty('--duration', `${3 + Math.random() * 4}s`);
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        fragment.appendChild(star);
+      }
+      
+      container.appendChild(fragment);
+    }
+    
+    function initTiltEffect(elements, maxTilt = 10) {
+      elements.forEach(el => {
+        let isActive = false;
+        
+        const updateTilt = (x, y) => {
+          const rect = el.getBoundingClientRect();
+          const xPos = (x - rect.left) / rect.width;
+          const yPos = (y - rect.top) / rect.height;
+          
+          const tiltX = (0.5 - xPos) * maxTilt * 2;
+          const tiltY = (yPos - 0.5) * maxTilt * 2;
+          
+          el.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
+        };
+        
+        const handleMove = (e) => {
+          const x = e.clientX || (e.touches && e.touches[0].clientX);
+          const y = e.clientY || (e.touches && e.touches[0].clientY);
+          if (x && y) {
+            updateTilt(x, y);
+            if (!isActive) {
+              isActive = true;
+            }
+          }
+        };
+        
+        const handleLeave = () => {
+          isActive = false;
+          el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        };
+        
+        el.addEventListener('mousemove', throttle(handleMove, 16));
+        el.addEventListener('mouseleave', handleLeave);
+        if ('ontouchstart' in window) {
+          el.addEventListener('touchmove', throttle(handleMove, 16), { passive: true });
+          el.addEventListener('touchend', handleLeave);
+        }
+      });
+    }
+    
+    function initBackToTop() {
+      const btn = document.getElementById('backToTop');
+      if (!btn) return;
+      
+      const scrollHandler = throttle(() => {
+        btn.classList.toggle('show', window.scrollY > 300);
+      }, 100);
+      
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    
+    function initScrollAnimations() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      const elements = document.querySelectorAll('.section-container, .card, .download-button');
+      elements.forEach(el => observer.observe(el));
+    }
+    
+    function initLogoClick() {
+      const logo = document.getElementById('logoClick');
+      if (!logo) return;
+      
+      logo.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById('download-section');
+        if (target) {
+          // Add click animation
+          logo.style.transform = 'scale(0.95)';
+          logo.style.filter = 'drop-shadow(0 5px 15px rgba(67, 97, 238, 0.5))';
+          
+          setTimeout(() => {
+            logo.style.transform = 'scale(1)';
+            logo.style.filter = 'drop-shadow(0 15px 30px rgba(67, 97, 238, 0.4))';
+            
+            // Smooth scroll with position fix for Google Sites
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            const duration = 800;
+            let startTime = null;
+            
+            function animation(currentTime) {
+              if (!startTime) startTime = currentTime;
+              const timeElapsed = currentTime - startTime;
+              const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+              window.scrollTo(0, run);
+              if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+            
+            function easeInOutQuad(t, b, c, d) {
+              t /= d/2;
+              if (t < 1) return c/2*t*t + b;
+              t--;
+              return -c/2 * (t*(t-2) - 1) + b;
+            }
+            
+            requestAnimationFrame(animation);
+          }, 150);
+        }
+      });
+    }
+    
+    function initSecurity() {
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+          e.preventDefault();
+        }
+      });
+    }
+    
+    function initTopButtons() {
+      setTimeout(() => {
+        document.querySelectorAll('.top-button').forEach(btn => {
+          btn.classList.add('visible');
+        });
+      }, 500);
+    }
+    
+    // Function to easily re-enable the executors button
+    function enableExecutorsButton(enable = true) {
+      const executorsBtn = document.querySelector('.executors-button');
+      if (executorsBtn) {
+        if (enable) {
+          executorsBtn.classList.remove('disabled');
+          executorsBtn.style.pointerEvents = 'auto';
+        } else {
+          executorsBtn.classList.add('disabled');
+          executorsBtn.style.pointerEvents = 'none';
+        }
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      createStars();
+      initTiltEffect(document.querySelectorAll('.card'), 8);
+      initTiltEffect(document.querySelectorAll('.download-button'), 5);
+      initTiltEffect([document.querySelector('.hero-logo')], 3);
+      initBackToTop();
+      initScrollAnimations();
+      initLogoClick();
+      initSecurity();
+      initTopButtons();
+      
+      // Disable executors button by default
+      enableExecutorsButton(false);
+      
+      const resizeObserver = new ResizeObserver(throttle(() => {
+        createStars();
+      }, 200));
+      
+      resizeObserver.observe(document.body);
+    });
+  </script>
+</body>
+</html>
