@@ -673,11 +673,11 @@
   <div id="stars-container"></div>
   
   <div class="top-nav-buttons">
-    <a class="top-button status-button" href="https://sites.google.com/view/sigmacheatz/status" target="_blank">
+    <a class="top-button status-button" href="https://usecomet.xyz/status" target="_blank">
       <span class="status-indicator"></span>
       <i class="fas fa-circle-notch"></i> Status
     </a>
-    <a class="top-button executors-button disabled" href="https://sites.google.com/view/sigmacheatz/executors" target="_blank">
+    <a class="top-button executors-button disabled" href="https://usecomet.xyz/executors" target="_blank">
       <i class="fas fa-bolt"></i> Executors
     </a>
     <a class="top-button discord-button" href="https://discord.gg/qeFQ57eqtj" target="_blank">
@@ -760,7 +760,7 @@
   
   <section class="section-container" id="download-section">
     <div class="premium-button-container">
-      <a href="https://sites.google.com/view/sigmacheatz/script" class="download-button script-button" target="_blank">
+      <a href="https://usecomet.xyz/script" class="download-button script-button" target="_blank">
         <div class="button-icon">
           <i class="fas fa-file-code"></i>
         </div>
@@ -770,7 +770,7 @@
         </div>
       </a>
       
-      <a href="https://sites.google.com/view/sigmacheatz/premium" class="download-button premium-button-main" target="_blank">
+      <a href="https://usecomet.xyz/premium" class="download-button premium-button-main" target="_blank">
         <div class="button-icon">
           <i class="fas fa-crown"></i>
         </div>
@@ -787,7 +787,6 @@
   <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
 
   <script>
-    // Performance optimization - throttle expensive operations
     function throttle(func, limit) {
       let lastFunc;
       let lastRan;
@@ -813,13 +812,11 @@
       const container = document.getElementById('stars-container');
       if (!container) return;
       
-      // Calculate star count based on screen size but cap it
       const starCount = Math.min(Math.floor(window.innerWidth * window.innerHeight / 2000), 250);
       const existingStars = container.querySelectorAll('.star').length;
       
       if (existingStars >= starCount) return;
       
-      // Use document fragment for better performance
       const fragment = document.createDocumentFragment();
       
       for (let i = 0; i < starCount; i++) {
@@ -920,7 +917,6 @@
             logo.style.transform = 'scale(1)';
             logo.style.filter = 'drop-shadow(0 15px 30px rgba(67, 97, 238, 0.4))';
             
-            // Smooth scroll with position fix for Google Sites
             const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
             const startPosition = window.pageYOffset;
             const distance = targetPosition - startPosition;
@@ -968,7 +964,6 @@
       }, 500);
     }
     
-    // Function to easily re-enable the executors button
     function enableExecutorsButton(enable = true) {
       const executorsBtn = document.querySelector('.executors-button');
       if (executorsBtn) {
@@ -993,7 +988,6 @@
       initSecurity();
       initTopButtons();
       
-      // Disable executors button by default
       enableExecutorsButton(false);
       
       const resizeObserver = new ResizeObserver(throttle(() => {
