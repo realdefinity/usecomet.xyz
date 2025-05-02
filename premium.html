@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMET | Next-Gen Anti-Cheat Bypass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== Modern Variables ===== */
+        :root {
+            --deep-space: #0a0a12;
+            --void-black: #000000;
+            --starlight: rgba(255, 255, 255, 0.95);
+            
+            --primary-blue: #4d79ff;
+            --primary-purple: #9d4dff;
+            --primary-pink: #ff4dd4;
+            
+            --gradient-main: linear-gradient(135deg, var(--primary-blue), var(--primary-purple), var(--primary-pink));
+            --gradient-reverse: linear-gradient(135deg, var(--primary-pink), var(--primary-purple), var(--primary-blue));
+            
+            --card-glow: 0 0 30px rgba(157, 77, 255, 0.3);
+            --text-glow: 0 0 10px rgba(157, 77, 255, 0.5);
+            --neon-border: 1px solid rgba(157, 77, 255, 0.2);
+        }
+
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background: var(--deep-space);
+            color: var(--starlight);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== Starry Background ===== */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration, 5s) infinite ease-in-out;
+            opacity: var(--opacity, 0.8);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== Main Container ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== Modern Header ===== */
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        .comet-logo {
+            font-size: 5rem;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            position: relative;
+            display: inline-block;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 400;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            text-shadow: var(--text-glow);
+        }
+
+        .divider {
+            width: 200px;
+            height: 4px;
+            background: var(--gradient-main);
+            margin: 2rem auto;
+            border-radius: 2px;
+            opacity: 0.8;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        /* ===== Modern Pricing Grid ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin: 6rem 0;
+        }
+
+        .pricing-card {
+            background: rgba(20, 20, 30, 0.5);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            border: var(--neon-border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            box-shadow: var(--card-glow);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-main);
+            opacity: 0.8;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        .pricing-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(157, 77, 255, 0.1), transparent 70%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(157, 77, 255, 0.4);
+        }
+
+        .pricing-card:hover::after {
+            opacity: 1;
+        }
+
+        .popular-card {
+            border: 1px solid var(--primary-purple);
+            box-shadow: 0 0 40px rgba(157, 77, 255, 0.4);
+        }
+
+        .popular-card::before {
+            height: 6px;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-main);
+            color: white;
+            padding: 0.4rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .plan-name {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .plan-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        .plan-price small {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            margin-left: 0.5rem;
+            align-self: flex-end;
+            margin-bottom: 0.5rem;
+        }
+
+        .features-list {
+            margin: 2.5rem 0;
+            list-style: none;
+        }
+
+        .features-list li {
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 2.5rem;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* ===== Modern Button ===== */
+        .purchase-btn {
+            display: inline-block;
+            background: var(--gradient-main);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            letter-spacing: 1px;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        .purchase-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-reverse);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            animation: gradientShift 8s infinite alternate;
+        }
+
+        .purchase-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(157, 77, 255, 0.5);
+        }
+
+        .purchase-btn:hover::before {
+            opacity: 1;
+        }
+
+        .purchase-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            margin-top: 8rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            position: relative;
+            padding-top: 2rem;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-purple), transparent);
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 1200px) {
+            .comet-logo {
+                font-size: 4.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.6rem;
+            }
+            
+            .pricing-grid {
+                gap: 2.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .comet-logo {
+                font-size: 4rem;
+            }
+            
+            .tagline {
+                font-size: 1.4rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                margin: 5rem 0;
+            }
+            
+            .pricing-card {
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 3rem 1.5rem;
+            }
+            
+            .comet-logo {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .plan-name {
+                font-size: 2rem;
+            }
+            
+            .plan-price {
+                font-size: 3rem;
+            }
+            
+            .features-list li {
+                font-size: 1rem;
+                padding-left: 2rem;
+            }
+            
+            .purchase-btn {
+                padding: 1.1rem 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .comet-logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .pricing-card {
+                padding: 2.5rem 1.8rem;
+            }
+            
+            .plan-name {
+                font-size: 1.8rem;
+            }
+            
+            .plan-price {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starry Background -->
+    <div class="stars-container" id="stars-container"></div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <header>
+            <div class="comet-logo">COMET</div>
+            <div class="divider"></div>
+            <div class="tagline">THE NEXT GENERATION OF EXPLOITING</div>
+        </header>
+        
+        <main>
+            <div class="pricing-grid">
+                <!-- 1 Month Plan -->
+                <div class="pricing-card">
+                    <h2 class="plan-name">1 Month</h2>
+                    <div class="plan-price">$2 <small>/ 400 Robux</small></div>
+                    <ul class="features-list">
+                        <li>30-day access</li>
+                        <li>Way better anti-cheat bypass</li>
+                        <li>Extra features</li>
+                        <li>More games</li>
+                    </ul>
+                    <button class="purchase-btn">Purchase</button>
+                </div>
+                
+                <!-- 1 Year Plan -->
+                <div class="pricing-card popular-card">
+                    <div class="popular-badge">Popular</div>
+                    <h2 class="plan-name">1 Year</h2>
+                    <div class="plan-price">$5 <small>/ 1000 Robux</small></div>
+                    <ul class="features-list">
+                        <li>365-day access</li>
+                        <li>Way better anti-cheat bypass</li>
+                        <li>Extra features</li>
+                        <li>More games</li>
+                    </ul>
+                    <button class="purchase-btn">Purchase</button>
+                </div>
+                
+                <!-- Lifetime Plan -->
+                <div class="pricing-card">
+                    <h2 class="plan-name">Lifetime</h2>
+                    <div class="plan-price">$10 <small>/ 2000 Robux</small></div>
+                    <ul class="features-list">
+                        <li>Permenant access</li>
+                        <li>Way better anti-cheat bypass</li>
+                        <li>Extra features</li>
+                        <li>More games</li>
+
+                        <li>Custom script requests</li>
+                    </ul>
+                    <button class="purchase-btn">Purchase</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            © 2025 COMET - The next generation of exploiting
+        </footer>
+    </div>
+
+    <!-- JavaScript for Interactive Elements -->
+    <script>
+        // Create stars
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const starCount = Math.min(100, Math.floor(window.innerWidth / 10));
+            
+            // Clear existing stars
+            container.innerHTML = '';
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random properties
+                const size = Math.random() * 2 + 1;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = 3 + Math.random() * 7;
+                const delay = Math.random() * 5;
+                const opacity = 0.3 + Math.random() * 0.7;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.opacity = opacity;
+                star.style.position = 'absolute';
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${delay}s`;
+                star.style.pointerEvents = 'none';
+                
+                // Occasionally make a colored star
+                if (Math.random() > 0.8) {
+                    const colors = ['#4d79ff', '#9d4dff', '#ff4dd4'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    star.style.backgroundColor = color;
+                    star.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                }
+                
+                container.appendChild(star);
+            }
+        }
+        
+        // 3D card tilt effect
+        function setupCardTilt() {
+            const cards = document.querySelectorAll('.pricing-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const angleX = (y - centerY) / 20;
+                    const angleY = (centerX - x) / 20;
+                    
+                    card.style.transform = `translateY(-10px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(-10px) rotateX(0) rotateY(0)';
+                });
+            });
+        }
+        
+        // Initialize everything when DOM loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            setupCardTilt();
+            
+            // Recreate stars on resize
+            window.addEventListener('resize', () => {
+                createStars();
+            });
+        });
+    </script>
+</body>
+</html>
