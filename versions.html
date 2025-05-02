@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox Version Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00a2ff;
+      --secondary-color: #7b2dff;
+      --accent-color: #ff3c5f;
+      --background-color: #0f172a;
+      --card-bg: rgba(15, 23, 42, 0.95);
+      --text-color: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font-primary: 'Orbitron', sans-serif;
+      --font-secondary: 'Montserrat', sans-serif;
+      --transition-duration: 0.4s;
+      --easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --glow-intensity: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-secondary);
+      background: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      background: radial-gradient(ellipse at bottom, #1e293b 0%, var(--background-color) 100%);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    .version-container {
+      width: 90%;
+      max-width: 1000px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 28px;
+      padding: 2.5rem;
+      box-shadow: 
+        0 12px 30px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(123, 45, 255, var(--glow-intensity));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: all var(--transition-duration) var(--easing);
+      will-change: transform;
+      margin: 2rem 0;
+    }
+
+    .version-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(123, 45, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      z-index: -1;
+      animation: rotate 20s linear infinite;
+    }
+
+    .version-container::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0, 162, 255, 0.5), rgba(123, 45, 255, 0.5));
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-family: var(--font-primary);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      text-align: center;
+      margin: 0 auto 1rem;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+      line-height: 1.2;
+    }
+
+    .live-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-family: var(--font-primary);
+      font-size: 1.1rem;
+      position: relative;
+      width: fit-content;
+    }
+
+    .live-pulse {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      margin-right: 8px;
+      position: relative;
+      animation: livePulse 1.5s infinite;
+    }
+
+    .live-pulse::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-color);
+      opacity: 0;
+      animation: livePulseRing 1.5s infinite;
+    }
+
+    .last-updated {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    .version-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .version-card {
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 18px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-duration) var(--easing);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .version-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .version-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, 
+        rgba(0, 162, 255, 0.15), 
+        rgba(123, 45, 255, 0.15));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity var(--transition-duration) var(--easing);
+    }
+
+    .version-card:hover::before {
+      opacity: 1;
+    }
+
+    .platform-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      justify-content: space-between;
+    }
+
+    .platform-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .platform-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, rgba(0, 162, 255, 0.2), rgba(123, 45, 255, 0.2));
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all var(--transition-duration) var(--easing);
+    }
+
+    .version-card:hover .platform-icon {
+      transform: rotate(10deg) scale(1.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .platform-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-color);
+      font-family: var(--font-secondary);
+    }
+
+    .version-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .download-btn, .copy-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-duration) var(--easing);
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .copy-btn {
+      background: linear-gradient(135deg, #4a4e69, #3a3d5a);
+    }
+
+    .download-btn:hover, .copy-btn:hover {
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 8px 20px rgba(0, 162, 255, 0.4);
+    }
+
+    .download-btn:active, .copy-btn:active {
+      transform: translateY(1px);
+    }
+
+    .download-btn::after, .copy-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-duration);
+    }
+
+    .download-btn:hover::after, .copy-btn:hover::after {
+      opacity: 1;
+    }
+
+    .version-info {
+      margin-top: 1rem;
+    }
+
+    .version-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .version-display {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary-color);
+      transition: all var(--transition-duration) var(--easing);
+      overflow: hidden;
+    }
+
+    .version-card:hover .version-display {
+      border-left-color: var(--accent-color);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .version-value {
+      font-family: var(--font-primary);
+      font-size: 1rem;
+      color: var(--text-color);
+      word-break: break-all;
+      padding: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .version-history {
+      margin-top: 1.5rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .history-version {
+      font-family: var(--font-primary);
+      color: var(--text-color);
+    }
+
+    .history-date {
+      color: var(--text-muted);
+    }
+
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem auto 0;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-duration) var(--easing);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 162, 255, 0.4);
+    }
+
+    .refresh-btn:active {
+      transform: translateY(1px);
+    }
+
+    .refresh-btn i {
+      margin-right: 0.5rem;
+      transition: transform var(--transition-duration) var(--easing);
+    }
+
+    .refresh-btn:hover i {
+      transform: rotate(360deg);
+    }
+
+    /* Loading state */
+    .loading {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      animation: loadingShimmer 1.5s infinite;
+      z-index: 1;
+    }
+
+    /* Error state */
+    .error {
+      color: #ff4757;
+    }
+
+    /* Success notification */
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    /* Animations */
+    @keyframes livePulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    @keyframes livePulseRing {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes loadingShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Floating animation for container */
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+      50% { transform: translateY(-10px) rotateX(2deg) rotateY(2deg); }
+    }
+
+    .version-container {
+      animation: gentleFloat 8s ease-in-out infinite;
+    }
+
+    /* Glow effect on hover */
+    .version-container:hover {
+      --glow-intensity: 0.15;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .version-container {
+        padding: 1.5rem;
+        border-radius: 20px;
+      }
+      
+      .version-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      
+      .version-container {
+        animation: none !important;
+      }
+      
+      .version-card:hover {
+        transform: none !important;
+      }
+      
+      .refresh-btn:hover i {
+        transform: none !important;
+      }
+      
+      .download-btn:hover, .copy-btn:hover {
+        transform: none !important;
+      }
+      
+      .loading::after {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="notification" id="notification">Copied to clipboard!</div>
+  
+  <div class="version-container">
+    <h1>Roblox Version Tracker</h1>
+    <div class="live-status">
+      <div class="live-pulse"></div>
+      <span>LIVE UPDATES</span>
+    </div>
+    <div class="last-updated" id="last-updated">Last updated: <span id="update-time">Just now</span></div>
+    
+    <div class="version-grid" id="version-grid">
+      <!-- Cards will be inserted here by JavaScript -->
+      <div class="version-card loading">
+        <div class="platform-header">
+          <div class="platform-info">
+            <div class="platform-icon">
+              <i class="fab fa-windows"></i>
+            </div>
+            <div class="platform-title">Windows</div>
+          </div>
+        </div>
+        <div class="version-info">
+          <div class="version-label">Current Version</div>
+          <div class="version-display">
+            <div class="version-value">Loading...</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="version-card loading">
+        <div class="platform-header">
+          <div class="platform-info">
+            <div class="platform-icon">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="platform-title">macOS</div>
+          </div>
+        </div>
+        <div class="version-info">
+          <div class="version-label">Current Version</div>
+          <div class="version-display">
+            <div class="version-value">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="refresh-btn" id="refresh-btn">
+      <i class="fas fa-sync-alt"></i> Refresh Versions
+    </button>
+  </div>
+
+  <script>
+    class RobloxVersionTracker {
+      constructor() {
+        this.particleCount = 100;
+        this.versionData = {
+          windows: {
+            current: null,
+            previous: null,
+            lastUpdated: null,
+            loading: true,
+            error: false
+          },
+          mac: {
+            current: null,
+            previous: null,
+            lastUpdated: null,
+            loading: true,
+            error: false
+          }
+        };
+        
+        // Use CORS proxy to bypass restrictions
+        this.proxyUrl = 'https://api.allorigins.win/raw?url=';
+        this.init();
+      }
+      
+      init() {
+        this.createParticles();
+        this.setupEventListeners();
+        this.fetchAllVersions();
+        this.updateLastUpdated();
+      }
+      
+      createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const fragment = document.createDocumentFragment();
+        
+        for (let i = 0; i < this.particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.opacity = Math.random() * 0.5;
+          particle.style.width = `${1 + Math.random() * 2}px`;
+          particle.style.height = particle.style.width;
+          particle.style.animationDelay = `${Math.random() * 15}s`;
+          particle.style.animationDuration = `${10 + Math.random() * 20}s`;
+          
+          fragment.appendChild(particle);
+        }
+        
+        particlesContainer.appendChild(fragment);
+      }
+      
+      async fetchAllVersions() {
+        try {
+          // Set loading state
+          this.versionData.windows.loading = true;
+          this.versionData.mac.loading = true;
+          this.versionData.windows.error = false;
+          this.versionData.mac.error = false;
+          this.renderVersionCards();
+          
+          // Use Promise.all to fetch both versions simultaneously
+          const [windowsData, macData] = await Promise.all([
+            this.fetchVersion('WindowsPlayer'),
+            this.fetchVersion('MacPlayer')
+          ]);
+          
+          // Store previous versions before updating
+          if (this.versionData.windows.current) {
+            this.versionData.windows.previous = this.versionData.windows.current;
+          }
+          if (this.versionData.mac.current) {
+            this.versionData.mac.previous = this.versionData.mac.current;
+          }
+          
+          // Update with new data
+          this.versionData.windows.current = windowsData.clientVersionUpload;
+          this.versionData.windows.lastUpdated = new Date().toISOString();
+          this.versionData.windows.loading = false;
+          
+          this.versionData.mac.current = macData.clientVersionUpload;
+          this.versionData.mac.lastUpdated = new Date().toISOString();
+          this.versionData.mac.loading = false;
+          
+          this.renderVersionCards();
+        } catch (error) {
+          console.error('Error fetching versions:', error);
+          
+          // Set error state
+          this.versionData.windows.error = true;
+          this.versionData.mac.error = true;
+          this.versionData.windows.loading = false;
+          this.versionData.mac.loading = false;
+          this.renderVersionCards();
+          
+          // Retry after 5 seconds if there's an error
+          setTimeout(() => this.fetchAllVersions(), 5000);
+        }
+      }
+      
+      async fetchVersion(platform) {
+        const url = `${this.proxyUrl}${encodeURIComponent(`https://clientsettings.roblox.com/v2/client-version/${platform}`)}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${platform} version`);
+        }
+        
+        return await response.json();
+      }
+      
+      renderVersionCards() {
+        const versionGrid = document.getElementById('version-grid');
+        versionGrid.innerHTML = '';
+        
+        const platforms = [
+          { 
+            id: 'windows', 
+            name: 'Windows', 
+            icon: 'fa-windows',
+            binaryType: 'WindowsPlayer'
+          },
+          { 
+            id: 'mac', 
+            name: 'macOS', 
+            icon: 'fa-apple',
+            binaryType: 'MacPlayer'
+          }
+        ];
+        
+        platforms.forEach(platform => {
+          const data = this.versionData[platform.id];
+          const card = document.createElement('div');
+          card.className = `version-card ${data.loading ? 'loading' : ''} ${data.error ? 'error' : ''}`;
+          card.style.animation = 'fadeIn 0.5s ease-out forwards';
+          card.style.opacity = '0';
+          
+          // Determine what to display
+          let versionDisplay = 'Loading...';
+          let showActions = false;
+          
+          if (data.error) {
+            versionDisplay = 'Error loading version';
+          } else if (data.current) {
+            versionDisplay = data.current;
+            showActions = true;
+          }
+          
+          // Create download URL if version is available
+          const downloadUrl = showActions ? 
+            `https://rdd.latte.to/?channel=LIVE&binaryType=${platform.binaryType}&version=${data.current.replace('version-', '')}` : 
+            '#';
+          
+          card.innerHTML = `
+            <div class="platform-header">
+              <div class="platform-info">
+                <div class="platform-icon">
+                  <i class="fab ${platform.icon}"></i>
+                </div>
+                <div class="platform-title">${platform.name}</div>
+              </div>
+              ${showActions ? `
+                <div class="version-actions">
+                  <a href="${downloadUrl}" class="download-btn" data-tooltip="Download ${platform.name} version" target="_blank">
+                    <i class="fas fa-download"></i>
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+            
+            <div class="version-info">
+              <div class="version-label">Current Version</div>
+              <div class="version-display">
+                <div class="version-value">${versionDisplay}</div>
+                ${showActions ? `
+                  <button class="copy-btn" data-tooltip="Copy version" data-version="${data.current}">
+                    <i class="far fa-copy"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            
+            ${data.previous && !data.error ? `
+              <div class="version-history">
+                <div class="version-label">Previous Version</div>
+                <div class="history-item">
+                  <span class="history-version">${data.previous}</span>
+                  <span class="history-date">${this.formatDate(data.lastUpdated)}</span>
+                </div>
+              </div>
+            ` : ''}
+          `;
+          
+          versionGrid.appendChild(card);
+        });
+        
+        // Add copy event listeners
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const version = btn.getAttribute('data-version');
+            this.copyToClipboard(version);
+          });
+        });
+      }
+      
+      copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          this.showNotification('Copied to clipboard!');
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+          this.showNotification('Failed to copy');
+        });
+      }
+      
+      showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 2000);
+      }
+      
+      formatDate(dateString) {
+        if (!dateString) return 'Unknown';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      
+      formatTime(dateString) {
+        if (!dateString) return 'Just now';
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+      }
+      
+      updateLastUpdated() {
+        const now = new Date();
+        document.getElementById('update-time').textContent = 
+          `Today at ${this.formatTime(now)}`;
+      }
+      
+      async checkForUpdates() {
+        const btn = document.getElementById('refresh-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+        
+        try {
+          await this.fetchAllVersions();
+          this.updateLastUpdated();
+        } catch (error) {
+          console.error('Error checking for updates:', error);
+        } finally {
+          btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Versions';
+          btn.disabled = false;
+        }
+      }
+      
+      setupEventListeners() {
+        document.getElementById('refresh-btn').addEventListener('click', () => {
+          this.checkForUpdates();
+        });
+        
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            this.updateLastUpdated();
+          }
+        });
+        
+        // Reduced motion preference
+        const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        this.handleReducedMotion(reducedMotionQuery);
+        reducedMotionQuery.addEventListener('change', this.handleReducedMotion);
+        
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+          if (!document.hidden) {
+            this.fetchAllVersions();
+            this.updateLastUpdated();
+          }
+        }, 5 * 60 * 1000);
+      }
+      
+      handleReducedMotion(query) {
+        if (query.matches) {
+          document.querySelectorAll('.particle').forEach(particle => {
+            particle.style.animation = 'none';
+          });
+        }
+      }
+    }
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      new RobloxVersionTracker();
+    });
+  </script>
+</body>
+</html>
