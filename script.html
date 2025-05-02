@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comet</title>
+    <meta name="description" content="Comet - The next generation Lua executor with unparalleled performance.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Montserrat:wght@500;600;700;800&display=swap');
+        
+        :root {
+            --comet-primary: #6b46ff;
+            --comet-primary-light: #8a6dff;
+            --comet-secondary: #00f7ff;
+            --comet-accent: #ff6bc9;
+            --comet-bg: #0a0a12;
+            --comet-card: rgba(18, 18, 32, 0.85);
+            --comet-text: #f0f0ff;
+            --comet-text-light: #ffffff;
+            --comet-border: rgba(107, 70, 255, 0.3);
+            --comet-border-light: rgba(107, 70, 255, 0.5);
+            --comet-success: #00ffaa;
+            --comet-warning: #ffcc00;
+            --comet-error: #ff5555;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: var(--comet-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            color: var(--comet-text);
+            line-height: 1.6;
+        }
+        
+        .comet-container {
+            position: relative;
+            width: min(800px, 92%);
+            z-index: 10;
+        }
+        
+        .comet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .comet-title {
+            color: var(--comet-text-light);
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 0 15px rgba(107, 70, 255, 0.4);
+            position: relative;
+            letter-spacing: 0.5px;
+        }
+        
+        .comet-logo {
+            height: 2rem;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(107, 70, 255, 0.8));
+            animation: comet-pulse 4s ease-in-out infinite;
+        }
+        
+        .comet-badge {
+            background: linear-gradient(135deg, var(--comet-primary), var(--comet-accent));
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 20px rgba(107, 70, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .code-container {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(107, 70, 255, 0.3);
+            border: 1px solid var(--comet-border);
+            backdrop-filter: blur(12px);
+            background: var(--comet-card);
+            transform-style: preserve-3d;
+            animation: container-float 8s ease-in-out infinite;
+        }
+        
+        .code-toolbar {
+            background: linear-gradient(90deg, #1a1a2e, #2a2a3e);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--comet-border);
+        }
+        
+        .code-language {
+            color: var(--comet-secondary);
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .code-language::before {
+            content: "";
+            width: 0.6rem;
+            height: 0.6rem;
+            background: var(--comet-secondary);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--comet-secondary);
+            animation: pulse 2s infinite;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--comet-text-light);
+            border: 1px solid var(--comet-border-light);
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 6rem;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            letter-spacing: 0.5px;
+        }
+        
+        .copy-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 70, 255, 0.2);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn.copied {
+            background: var(--comet-primary);
+            color: white;
+            border-color: var(--comet-primary-light);
+            box-shadow: 0 0 20px rgba(107, 70, 255, 0.5);
+        }
+        
+        .copy-btn.error {
+            background: var(--comet-error);
+            color: white;
+            border-color: var(--comet-error);
+        }
+        
+        .code-content {
+            background: var(--comet-card);
+            padding: 2.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--comet-text);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+            min-height: 10rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .code-footer {
+            background: linear-gradient(90deg, #1a1a2e, #2a2a3e);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--comet-border);
+        }
+        
+        .code-status {
+            color: var(--comet-warning);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .code-status::before {
+            content: "";
+            width: 0.6rem;
+            height: 0.6rem;
+            background: var(--comet-warning);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--comet-warning);
+            animation: pulse 2s infinite;
+        }
+        
+        .code-discord {
+            color: var(--comet-text-light);
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .code-discord:hover {
+            opacity: 1;
+            color: var(--comet-secondary);
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+            transform: translateX(3px);
+        }
+        
+        /* Animated background elements */
+        .comet-bg-element {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: 1;
+            animation: float 15s ease-in-out infinite;
+            will-change: transform;
+        }
+        
+        .bg-1 {
+            width: 25rem;
+            height: 25rem;
+            background: var(--comet-primary);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .bg-2 {
+            width: 20rem;
+            height: 20rem;
+            background: var(--comet-secondary);
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .bg-3 {
+            width: 15rem;
+            height: 15rem;
+            background: var(--comet-accent);
+            top: 60%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, 10px) rotate(5deg); }
+            50% { transform: translate(0, 20px) rotate(0deg); }
+            75% { transform: translate(-10px, 10px) rotate(-5deg); }
+        }
+        
+        @keyframes container-float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+        
+        @keyframes comet-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Main content animation */
+        .unreleased-text {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--comet-primary), var(--comet-accent), var(--comet-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: text-pulse 3s ease-in-out infinite;
+            letter-spacing: 1px;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-shadow: 0 0 10px rgba(107, 70, 255, 0.3);
+        }
+        
+        .unreleased-text::after {
+            content: "";
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--comet-secondary), transparent);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: line-pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes text-pulse {
+            0%, 100% { 
+                opacity: 0.9;
+                text-shadow: 0 0 10px rgba(107, 70, 255, 0.3);
+            }
+            50% { 
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(107, 70, 255, 0.6);
+            }
+        }
+        
+        @keyframes line-pulse {
+            0%, 100% { width: 60%; opacity: 0.8; }
+            50% { width: 80%; opacity: 1; }
+        }
+        
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(107, 70, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: float-particle 15s linear infinite;
+            will-change: transform;
+        }
+        
+        @keyframes float-particle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+        
+        /* Glow effect */
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(107, 70, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Loading animation */
+        .loading-animation {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 32, 0.8);
+            z-index: 20;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid rgba(107, 70, 255, 0.2);
+            border-top-color: var(--comet-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            color: var(--comet-text-light);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: center;
+            animation: text-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .code-content {
+                padding: 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .comet-badge {
+                padding: 0.4rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .copy-btn {
+                padding: 0.5rem 1rem;
+                min-width: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="glow"></div>
+    <div class="comet-bg-element bg-1"></div>
+    <div class="comet-bg-element bg-2"></div>
+    <div class="comet-bg-element bg-3"></div>
+    
+    <div class="comet-container">
+        <div class="comet-header">
+            <h1 class="comet-title">
+                <img src="https://i.imgur.com/UQFupYL.png" alt="Comet Logo" class="comet-logo">
+                Comet
+            </h1>
+            <div class="comet-badge">FREE</div>
+        </div>
+        
+        <div class="code-container">
+            <div class="code-toolbar">
+                <span class="code-language">Lua</span>
+                <button class="copy-btn" id="copyButton">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                </button>
+            </div>
+            
+            <div class="code-content">
+                <span class="unreleased-text">COMING SOON</span>
+                <div class="loading-animation" id="loadingAnimation">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Preparing your experience...</div>
+                </div>
+            </div>
+            
+            <div class="code-footer">
+                <span class="code-status">Under Development</span>
+                <a href="https://discord.gg/qeFQ57eqtj" target="_blank" class="code-discord">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.3 4.1c-1.6-0.7-3.3-1.2-5-1.4 -0.2 0.3-0.4 0.7-0.6 1 -1.8-0.3-3.6-0.3-5.4 0 -0.2-0.3-0.4-0.7-0.6-1 -1.8 0.2-3.5 0.7-5.1 1.4 -3.1 4.7-4 9.5-3.5 14.2 1.8 1.3 3.6 2.1 5.6 2.6 0.5-0.7 0.9-1.4 1.2-2.2 -0.7-0.2-1.3-0.5-1.9-0.9 0.2-0.1 0.4-0.3 0.5-0.5 3.9 1.8 8.1 1.8 12 0 0.2 0.2 0.4 0.4 0.5 0.5 -0.6 0.4-1.2 0.7-1.9 0.9 0.4 0.8 0.8 1.6 1.2 2.2 2-0.5 3.8-1.3 5.6-2.6 0.7-5.7-0.9-10.5-4-14.2zM8.5 15.5c-1.1 0-2-1-2-2.2 0-1.2 0.9-2.2 2-2.2 1.1 0 2 1 2 2.2 0 1.2-0.9 2.2-2 2.2zm7 0c-1.1 0-2-1-2-2.2 0-1.2 0.9-2.2 2-2.2 1.1 0 2 1 2 2.2 0 1.2-0.9 2.2-2 2.2z"></path>
+                    </svg>
+                    Join Discord
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced copy functionality with loading state
+        const copyButton = document.getElementById('copyButton');
+        const loadingAnimation = document.getElementById('loadingAnimation');
+        const originalButtonHTML = copyButton.innerHTML;
+        
+        copyButton.addEventListener('click', async () => {
+            // Show loading state
+            loadingAnimation.style.display = 'flex';
+            
+            try {
+                // Simulate a more realistic loading time
+                await new Promise(resolve => setTimeout(resolve, 800));
+                await navigator.clipboard.writeText('loadstring(game:HttpGet("https://cometrbx.com/script.lua"))()');
+                
+                // Visual feedback
+                copyButton.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    Copied!
+                `;
+                copyButton.classList.add('copied');
+                
+                // Create a confirmation animation
+                const checkmark = document.createElement('div');
+                checkmark.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--comet-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                `;
+                checkmark.style.position = 'absolute';
+                checkmark.style.top = '50%';
+                checkmark.style.left = '50%';
+                checkmark.style.transform = 'translate(-50%, -50%) scale(0)';
+                checkmark.style.opacity = '0';
+                checkmark.style.transition = 'all 0.4s ease';
+                checkmark.style.zIndex = '100';
+                document.querySelector('.code-content').appendChild(checkmark);
+                
+                setTimeout(() => {
+                    checkmark.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    checkmark.style.opacity = '1';
+                }, 10);
+                
+                setTimeout(() => {
+                    checkmark.style.transform = 'translate(-50%, -50%) scale(1)';
+                    checkmark.style.opacity = '0.8';
+                }, 200);
+                
+                setTimeout(() => {
+                    checkmark.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                    checkmark.style.opacity = '0';
+                }, 1000);
+                
+                // Remove the checkmark after animation
+                setTimeout(() => {
+                    checkmark.remove();
+                }, 1400);
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyButton.innerHTML = originalButtonHTML;
+                    copyButton.classList.remove('copied');
+                    loadingAnimation.style.display = 'none';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                copyButton.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Error
+                `;
+                copyButton.classList.add('error');
+                loadingAnimation.style.display = 'none';
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = originalButtonHTML;
+                    copyButton.classList.remove('error');
+                }, 2000);
+            }
+        });
+        
+        // Create floating particles with more variety
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = Math.random() * 5 + 1;
+            const posX = Math.random() * 100;
+            const delay = Math.random() * 20;
+            const duration = Math.random() * 15 + 10;
+            const opacity = Math.random() * 0.5 + 0.1;
+            
+            // Random color from theme
+            const colors = [
+                'rgba(107, 70, 255, ' + opacity + ')',
+                'rgba(0, 247, 255, ' + opacity + ')',
+                'rgba(255, 107, 201, ' + opacity + ')'
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.bottom = `-${size}px`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.background = color;
+            
+            // Random animation variation
+            if (Math.random() > 0.5) {
+                particle.style.animationName = 'float-particle-alt';
+            }
+            
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Add an alternative particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float-particle-alt {
+                0% {
+                    transform: translateY(0) translateX(0);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) translateX(-20px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add subtle parallax effect to background elements
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.querySelector('.bg-1').style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+            document.querySelector('.bg-2').style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+            document.querySelector('.bg-3').style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+        });
+        
+        // Add console greeting
+        console.log('%c☄️ Comet Executor', 'color: #6b46ff; font-size: 18px; font-weight: bold;');
+        console.log('%cComing soon with revolutionary performance', 'color: #00f7ff;');
+        console.log('%cJoin our Discord: https://discord.gg/qeFQ57eqtj', 'color: #f0f0ff;');
+    </script>
+</body>
+</html>
