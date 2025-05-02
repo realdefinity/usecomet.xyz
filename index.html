@@ -4,25 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="The next generation of exploiting">
-  <title>Comet</title>
+  <title>Comet | Next-Gen Exploiting</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg>">
   <style>
+    /* ========== CSS Variables ========== */
     :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3a0ca3;
-      --accent-color: #f72585;
-      --background-color: #0a0a12;
-      --text-color: #f8f9fa;
+      /* Color Palette */
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --accent: #f72585;
+      --background: #0a0a12;
+      --text: #f8f9fa;
       --card-bg: rgba(255, 255, 255, 0.05);
       --card-border: rgba(255, 255, 255, 0.08);
+      
+      /* Status Colors */
+      --online: #4CAF50;
+      --offline: #F44336;
+      --idle: #FFC107;
+      
+      /* Animation */
       --easing-smooth: cubic-bezier(0.165, 0.84, 0.44, 1);
       --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
       --transition-fast: 0.15s;
       --transition-medium: 0.3s;
       --transition-slow: 0.5s;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.2);
+      --shadow-xl: 0 20px 50px rgba(0,0,0,0.3);
     }
+
+    /* ========== Base Styles ========== */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -33,17 +49,21 @@
       -ms-user-select: none;
       user-select: none;
     }
+
     html {
       scroll-behavior: smooth;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--background-color);
-      color: var(--text-color);
+      background: var(--background);
+      color: var(--text);
       overflow-x: hidden;
       line-height: 1.6;
       min-height: 100vh;
     }
+
+    /* ========== Star Background ========== */
     #stars-container {
       position: fixed;
       top: 0;
@@ -54,6 +74,7 @@
       overflow: hidden;
       background: radial-gradient(ellipse at bottom, #1a1a2e 0%, #0d0d0d 100%);
     }
+
     .star {
       position: absolute;
       background: white;
@@ -62,12 +83,13 @@
       opacity: 0;
       will-change: transform, opacity;
     }
+
     @keyframes twinkle {
       0%, 100% { opacity: 0; transform: scale(0.3); }
       50% { opacity: var(--opacity, 0.8); transform: scale(1); }
     }
-    
-    /* Enhanced Hero Section */
+
+    /* ========== Hero Section ========== */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -75,11 +97,11 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 20px;
+      padding: 2rem;
       position: relative;
       overflow: hidden;
-      background: radial-gradient(circle at center, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
     }
+
     .hero::before {
       content: '';
       position: absolute;
@@ -87,62 +109,76 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle at center, rgba(67, 97, 238, 0.15) 0%, transparent 70%);
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(67, 97, 238, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(247, 37, 133, 0.1) 0%, transparent 50%);
       z-index: -1;
-      animation: pulse 15s infinite alternate;
+      animation: 
+        pulse-primary 15s infinite alternate var(--easing-smooth),
+        pulse-accent 18s infinite alternate-reverse var(--easing-smooth);
     }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.3; }
+
+    @keyframes pulse-primary {
+      0% { transform: scale(1); opacity: 0.2; }
       100% { transform: scale(1.2); opacity: 0.1; }
     }
+
+    @keyframes pulse-accent {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.3) rotate(5deg); }
+    }
+
     .hero-content {
       position: relative;
       z-index: 1;
       max-width: 800px;
-      padding: 50px;
-      border-radius: 30px;
+      padding: 3rem;
+      border-radius: 2rem;
       backdrop-filter: blur(20px);
       background: rgba(10, 10, 18, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-xl);
       transform-style: preserve-3d;
       will-change: transform;
-      animation: fadeIn 1s ease-out forwards;
+      animation: fadeInUp 1s var(--easing-smooth) forwards;
       transition: all var(--transition-medium) var(--easing-smooth);
     }
+
     .hero-content:hover {
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
-      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-5px);
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+
     .hero-logo {
-      width: 400px;
+      width: min(400px, 90%);
       height: auto;
       filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
       transform-style: preserve-3d;
       will-change: transform;
-      transition: all 0.5s var(--easing-smooth);
+      transition: all var(--transition-medium) var(--easing-smooth);
       opacity: 0;
       transform: translateY(30px) scale(0.95);
       animation: logoReveal 1.2s var(--easing-smooth) 0.3s forwards;
       cursor: pointer;
     }
+
     .hero-logo:hover {
       transform: translateY(-5px) scale(1.03);
       filter: drop-shadow(0 15px 30px rgba(67, 97, 238, 0.4));
     }
+
     .hero-logo:active {
       transform: translateY(0) scale(0.98);
     }
+
     @keyframes logoReveal {
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
+
     .hero-subtext {
       font-size: clamp(1.5rem, 3vw, 2rem);
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 2px 10px rgba(0,0,0,0.7);
@@ -151,87 +187,91 @@
       transform: translateY(20px);
       animation: fadeInUp 1s var(--easing-smooth) 0.8s forwards;
       font-weight: 500;
-      margin-top: 20px;
+      margin-top: 1.5rem;
       position: relative;
       transition: all var(--transition-medium) var(--easing-smooth);
     }
+
     .hero-subtext:hover {
       text-shadow: 0 4px 15px rgba(0,0,0,0.9);
     }
+
     .hero-subtext::after {
       content: '';
       position: absolute;
-      bottom: -15px;
+      bottom: -0.75rem;
       left: 50%;
       transform: translateX(-50%);
-      width: 100px;
+      width: 6rem;
       height: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       border-radius: 3px;
       opacity: 0;
       animation: fadeIn 0.5s ease-out 1.5s forwards;
       transition: all var(--transition-medium) var(--easing-smooth);
     }
+
     .hero-subtext:hover::after {
-      width: 120px;
+      width: 7.5rem;
       height: 4px;
     }
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      to { opacity: 0.6; }
-    }
 
+    /* ========== Section Styles ========== */
     .section-container {
       max-width: 1200px;
-      margin: 150px auto;
-      padding: 40px 20px;
+      margin: 8rem auto;
+      padding: 2rem;
       text-align: center;
       opacity: 0;
       transform: translateY(50px);
       transition: all 0.8s var(--easing-smooth);
     }
+
     .section-container.visible {
       opacity: 1;
       transform: translateY(0);
     }
-    .section-container h2 {
+
+    .section-title {
       font-size: clamp(2rem, 5vw, 3rem);
       text-transform: uppercase;
       letter-spacing: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 60px;
+      margin-bottom: 3rem;
       position: relative;
       display: inline-block;
     }
-    .section-container h2::after {
+
+    .section-title::after {
       content: '';
       position: absolute;
-      bottom: -15px;
+      bottom: -0.75rem;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
+      width: 5rem;
       height: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       border-radius: 3px;
     }
+
+    /* ========== Card Components ========== */
     .cards-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
       perspective: 1000px;
+      padding: 1rem;
     }
+
     .card {
-      width: 320px;
-      height: 220px;
+      min-height: 220px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
+      border-radius: 1.25rem;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       position: relative;
@@ -239,16 +279,18 @@
       backdrop-filter: blur(12px);
       transform-style: preserve-3d;
       will-change: transform;
-      transition: transform var(--transition-fast) linear, box-shadow var(--transition-medium) var(--easing-smooth);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-lg);
       opacity: 0;
       transform: translateY(30px) scale(0.95);
       transition: all 0.6s var(--easing-smooth);
+      padding: 2rem;
     }
+
     .card.visible {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+
     .card::before {
       content: '';
       position: absolute;
@@ -256,6 +298,7 @@
       background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
       z-index: 1;
     }
+
     .card::after {
       content: '';
       position: absolute;
@@ -264,287 +307,342 @@
       opacity: 0;
       transition: opacity var(--transition-medium) var(--easing-smooth);
     }
+
     .card:hover {
-      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
       transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
       background: rgba(255, 255, 255, 0.07);
     }
+
     .card:hover::after {
       opacity: 1;
     }
+
     .card-title {
-      font-size: 1.8rem;
+      font-size: 1.75rem;
       font-weight: 500;
       position: relative;
       z-index: 2;
       transition: transform var(--transition-medium) var(--easing-smooth);
+      text-align: center;
+      margin-bottom: 1rem;
     }
+
     .card:hover .card-title {
       transform: scale(1.05);
     }
+
     .card-icon {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      font-size: 1.5rem;
+      font-size: 2.5rem;
       opacity: 0.5;
       transition: all var(--transition-medium) var(--easing-smooth);
       z-index: 2;
+      margin-top: 1rem;
     }
+
     .card:hover .card-icon {
       opacity: 0.9;
       transform: scale(1.2);
     }
-    .premium-button-container {
+
+    /* ========== Button Components ========== */
+    .button-container {
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 1.5rem;
       flex-wrap: wrap;
-      margin-top: 60px;
+      margin-top: 4rem;
     }
-    
-    /* Download Buttons */
-    .download-button {
+
+    .button {
       position: relative;
-      width: 280px;
+      min-width: 280px;
       height: 80px;
-      border-radius: 16px;
+      border-radius: 1rem;
       display: flex;
       align-items: center;
-      padding: 0 25px;
+      padding: 0 1.5rem;
       overflow: hidden;
       backdrop-filter: blur(10px);
       border: none;
       transform-style: preserve-3d;
       will-change: transform;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transition: all var(--transition-medium) var(--easing-smooth);
+      box-shadow: var(--shadow-md);
       opacity: 0;
       transform: translateY(20px);
-      text-decoration: none !important;
+      text-decoration: none;
       cursor: pointer;
     }
-    .download-button.visible {
+
+    .button.visible {
       opacity: 1;
       transform: translateY(0);
     }
-    .download-button::before {
+
+    .button::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
       z-index: 1;
     }
-    .download-button::after {
+
+    .button::after {
       content: '';
       position: absolute;
       inset: 0;
       opacity: 0;
-      transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: opacity var(--transition-medium) var(--easing-smooth);
       z-index: 1;
     }
-    .download-button:hover {
-      transform: translateY(-5px) scale(1.03) translateZ(0);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+
+    .button:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: var(--shadow-xl);
     }
-    .download-button:active {
-      transform: translateY(0) scale(0.98) translateZ(0);
+
+    .button:active {
+      transform: translateY(0) scale(0.98);
     }
-    .download-button .button-icon {
+
+    .button-icon {
       width: 48px;
       height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
-      margin-right: 18px;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-radius: 0.75rem;
+      margin-right: 1rem;
+      transition: all var(--transition-medium) var(--easing-smooth);
       z-index: 2;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
     }
-    .download-button:hover .button-icon {
-      transform: scale(1.15) translateZ(0);
+
+    .button:hover .button-icon {
+      transform: scale(1.15);
     }
-    .download-button .button-text {
+
+    .button-text {
       text-align: left;
       z-index: 2;
+      flex: 1;
     }
-    .download-button .button-title {
+
+    .button-title {
       font-size: 1.2rem;
       font-weight: 600;
-      margin-bottom: 4px;
-      transition: all 0.2s ease-out;
+      margin-bottom: 0.25rem;
+      transition: all var(--transition-fast) ease-out;
       color: white;
     }
-    .download-button .button-subtitle {
+
+    .button-subtitle {
       font-size: 0.9rem;
       opacity: 0.8;
-      transition: all 0.2s ease-out;
+      transition: all var(--transition-fast) ease-out;
       color: white;
       font-weight: 400;
     }
-    .download-button:hover .button-title {
-      transform: translateX(3px) translateZ(0);
+
+    .button:hover .button-title {
+      transform: translateX(3px);
     }
-    .download-button:hover .button-subtitle {
+
+    .button:hover .button-subtitle {
       opacity: 1;
     }
-    
-    /* Script button design */
-    .script-button {
+
+    /* Button Variants */
+    .button-script {
       background: linear-gradient(135deg, rgba(101, 73, 255, 0.2), rgba(101, 73, 255, 0.1));
       border: 1px solid rgba(101, 73, 255, 0.3);
     }
-    .script-button .button-icon {
+
+    .button-script .button-icon {
       background: rgba(101, 73, 255, 0.3);
       color: #b5a6ff;
     }
-    .script-button:hover {
-      box-shadow: 0 15px 35px rgba(101, 73, 255, 0.25);
+
+    .button-script:hover {
+      box-shadow: 0 20px 40px rgba(101, 73, 255, 0.3);
     }
-    .script-button:hover::after {
+
+    .button-script:hover::after {
       opacity: 1;
       background: linear-gradient(135deg, rgba(101, 73, 255, 0.2), transparent);
     }
-    .script-button:hover .button-icon {
+
+    .button-script:hover .button-icon {
       background: rgba(101, 73, 255, 0.4);
-      transform: rotate(5deg) scale(1.15) translateZ(0);
-      box-shadow: 0 0 15px rgba(181, 166, 255, 0.3);
+      transform: rotate(5deg) scale(1.15);
+      box-shadow: 0 0 20px rgba(181, 166, 255, 0.4);
     }
-    
-    /* Premium button design */
-    .premium-button-main {
+
+    .button-premium {
       background: linear-gradient(135deg, rgba(255, 179, 71, 0.2), rgba(255, 179, 71, 0.1));
       border: 1px solid rgba(255, 179, 71, 0.3);
     }
-    .premium-button-main .button-icon {
+
+    .button-premium .button-icon {
       background: rgba(255, 179, 71, 0.3);
       color: #ffd8a6;
     }
-    .premium-button-main:hover {
-      box-shadow: 0 15px 35px rgba(255, 179, 71, 0.25);
+
+    .button-premium:hover {
+      box-shadow: 0 20px 40px rgba(255, 179, 71, 0.3);
     }
-    .premium-button-main:hover::after {
+
+    .button-premium:hover::after {
       opacity: 1;
       background: linear-gradient(135deg, rgba(255, 179, 71, 0.2), transparent);
     }
-    .premium-button-main:hover .button-icon {
+
+    .button-premium:hover .button-icon {
       background: rgba(255, 179, 71, 0.4);
       animation: pulseGold 0.8s infinite alternate;
     }
+
     @keyframes pulseGold {
-      0% { transform: scale(1) translateZ(0); box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.4); }
-      100% { transform: scale(1.15) translateZ(0); box-shadow: 0 0 0 8px rgba(255, 179, 71, 0); }
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 179, 71, 0.4); }
+      100% { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(255, 179, 71, 0); }
     }
-    
-    /* Enhanced Top Navigation Buttons */
+
+    /* ========== Navigation Buttons ========== */
     .top-nav-buttons {
       position: fixed;
-      top: 25px;
-      right: 25px;
+      top: 1.5rem;
+      right: 1.5rem;
       display: flex;
-      gap: 15px;
+      gap: 1rem;
       z-index: 100;
       will-change: transform;
     }
-    .top-button {
-      padding: 12px 24px;
-      border-radius: 12px;
+
+    .nav-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
       font-weight: 600;
       font-size: 0.95rem;
       cursor: pointer;
       backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-md);
       border: 1px solid transparent;
       transform: translateZ(0);
       will-change: transform, box-shadow, background;
       transition: 
-        transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
-        box-shadow 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
-        background 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+        transform var(--transition-fast) var(--easing-smooth),
+        box-shadow var(--transition-fast) var(--easing-smooth),
+        background var(--transition-fast) var(--easing-smooth);
       opacity: 0;
       transform: translateY(-20px);
-      text-decoration: none !important;
+      text-decoration: none;
     }
-    .top-button.visible {
+
+    .nav-button.visible {
       opacity: 1;
       transform: translateY(0);
     }
-    .top-button i {
-      margin-right: 8px;
-      transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+    .nav-button i {
+      margin-right: 0.5rem;
+      transition: transform var(--transition-fast) var(--easing-smooth);
     }
-    
-    /* Premium Status Button Design */
-    .status-button {
+
+    /* Status Button - Premium Design */
+    .button-status {
       background: rgba(30, 30, 30, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
-      transition-delay: 0.1s;
+      transition: all var(--transition-medium) var(--easing-smooth);
       position: relative;
       overflow: hidden;
-      padding-left: 15px;
-    }
-    .status-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 6px;
-      height: 100%;
-      background: #4CAF50;
-      transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-      z-index: -1;
-    }
-    }
-    @keyframes pulseStatus {
-      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-    }
-    .status-button:hover {
-      background: rgba(40, 40, 40, 0.5);
-      transform: translateY(-3px) translateZ(0);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    .status-button:hover::before {
-      width: 100%;
-      opacity: 0.15;
-    }
-    }
-    }
-    .status-button i {
-      margin-left: 12px;
-      color: #4CAF50;
     }
 
-    /* Executors button - enhanced */
-    .executors-button {
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--online);
+      margin-right: 0.75rem;
+      position: relative;
+      box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+      animation: pulseStatus 2s infinite;
+    }
+
+    .button-status:hover {
+      background: rgba(40, 40, 40, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .button-status:hover .status-indicator {
+      animation: pulseStatus 1s infinite, bounce 0.5s;
+    }
+
+    .button-status i {
+      color: var(--online);
+      transition: transform var(--transition-medium) var(--easing-smooth);
+    }
+
+    .button-status:hover i {
+      transform: rotate(360deg);
+    }
+
+    /* Executors Button */
+    .button-executors {
       background: rgba(67, 97, 238, 0.2);
       border: 1px solid rgba(67, 97, 238, 0.3);
       color: #aab7ff;
-      transition-delay: 0.2s;
     }
-    .executors-button:hover {
+
+    .button-executors:hover {
       background: rgba(67, 97, 238, 0.3);
-      transform: translateY(-3px) translateZ(0);
-      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.2);
     }
-    .executors-button:hover i {
-      transform: scale(1.15) translateZ(0);
+
+    .button-executors:hover i {
+      transform: scale(1.15);
       color: #ffffff;
       animation: boltPulse 0.5s ease-out;
     }
+
     @keyframes boltPulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.3); }
       100% { transform: scale(1.15); }
     }
 
-    /* Disabled Executors Button */
-    .executors-button.disabled {
+    /* Discord Button */
+    .button-discord {
+      background: rgba(114, 137, 218, 0.2);
+      border: 1px solid rgba(114, 137, 218, 0.3);
+      color: #b8c4ff;
+    }
+
+    .button-discord:hover {
+      background: rgba(114, 137, 218, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(114, 137, 218, 0.2);
+    }
+
+    .button-discord:hover i {
+      transform: scale(1.15);
+      color: #ffffff;
+      animation: discordFloat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes discordFloat {
+      0%, 100% { transform: translateY(0) scale(1.15); }
+      50% { transform: translateY(-3px) scale(1.15); }
+    }
+
+    /* Disabled State */
+    .disabled {
       background: rgba(67, 97, 238, 0.1) !important;
       border: 1px solid rgba(67, 97, 238, 0.1) !important;
       color: rgba(170, 183, 255, 0.5) !important;
@@ -553,7 +651,8 @@
       position: relative;
       overflow: hidden;
     }
-    .executors-button.disabled::after {
+
+    .disabled::after {
       content: '';
       position: absolute;
       top: 0;
@@ -569,36 +668,16 @@
       );
       pointer-events: none;
     }
-    .executors-button.disabled i {
+
+    .disabled i {
       color: rgba(170, 183, 255, 0.3) !important;
     }
 
-    /* Discord button - enhanced */
-    .discord-button {
-      background: rgba(114, 137, 218, 0.2);
-      border: 1px solid rgba(114, 137, 218, 0.3);
-      color: #b8c4ff;
-      transition-delay: 0.3s;
-    }
-    .discord-button:hover {
-      background: rgba(114, 137, 218, 0.3);
-      transform: translateY(-3px) translateZ(0);
-      box-shadow: 0 8px 20px rgba(114, 137, 218, 0.2);
-    }
-    .discord-button:hover i {
-      transform: scale(1.15) translateZ(0);
-      color: #ffffff;
-      animation: discordFloat 1.5s ease-in-out infinite;
-    }
-    @keyframes discordFloat {
-      0%, 100% { transform: translateY(0) scale(1.15); }
-      50% { transform: translateY(-3px) scale(1.15); }
-    }
-
+    /* ========== Back to Top Button ========== */
     #backToTop {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 2rem;
+      right: 2rem;
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -612,60 +691,87 @@
       transition: all var(--transition-medium) var(--easing-smooth);
       backdrop-filter: blur(10px);
       z-index: 90;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-md);
     }
+
     #backToTop:hover {
       background: rgba(255, 255, 255, 0.15);
       transform: translateY(-3px) scale(1.1);
     }
+
     #backToTop.show {
       opacity: 1;
     }
+
+    /* ========== Animations ========== */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* ========== Responsive Design ========== */
     @media (max-width: 1024px) {
       .top-nav-buttons {
-        right: 15px;
-        gap: 10px;
+        right: 1rem;
+        gap: 0.75rem;
+      }
+      
+      .hero-content {
+        padding: 2rem;
       }
     }
+
     @media (max-width: 768px) {
-      .hero-logo { width: 300px; }
-      .hero-content {
-        padding: 30px;
+      .cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
-      .card { width: 280px; height: 180px; }
-      .download-button { width: 100%; max-width: 280px; }
-      .top-button {
-        padding: 10px 15px;
+      
+      .button {
+        min-width: 250px;
+        height: 70px;
+      }
+      
+      .nav-button {
+        padding: 0.5rem 1rem;
         font-size: 0.85rem;
       }
-      .status-button {
-        padding-left: 12px;
-      }
-      .status-indicator {
-        left: 12px;
-      }
     }
+
     @media (max-width: 480px) {
-      .hero-logo { width: 250px; }
       .hero-content {
-        padding: 20px;
-        width: 90%;
+        padding: 1.5rem;
+        width: 95%;
       }
+      
       .top-nav-buttons {
-        gap: 8px;
+        gap: 0.5rem;
+        top: 1rem;
+        right: 1rem;
       }
-      .top-button {
-        padding: 8px 12px;
+      
+      .nav-button {
+        padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
       }
-      .premium-button-container { flex-direction: column; align-items: center; }
-      .status-button {
-        padding-left: 10px;
+      
+      .button-container {
+        flex-direction: column;
+        align-items: center;
       }
-      .status-indicator {
-        left: 10px;
-        width: 8px;
-        height: 8px;
+      
+      .button {
+        width: 100%;
+        max-width: 280px;
       }
     }
   </style>
@@ -673,28 +779,32 @@
 <body>
   <div id="stars-container"></div>
   
+  <!-- Top Navigation Buttons -->
   <div class="top-nav-buttons">
-    <a class="top-button status-button" href="https://usecomet.xyz/status" target="_blank">
+    <a class="nav-button button-status" href="https://usecomet.xyz/status">
       <span class="status-indicator"></span>
-      <i class="fas fa-circle-notch"></i> Status
+      Status
+      <i class="fas fa-circle-notch"></i>
     </a>
-    <a class="top-button executors-button disabled" href="https://usecomet.xyz/executors" target="_blank">
+    <a class="nav-button button-executors disabled" href="https://usecomet.xyz/executors">
       <i class="fas fa-bolt"></i> Executors
     </a>
-    <a class="top-button discord-button" href="https://discord.gg/qeFQ57eqtj" target="_blank">
+    <a class="nav-button button-discord" href="https://discord.gg/qeFQ57eqtj">
       <i class="fab fa-discord"></i> Discord
     </a>
   </div>
   
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <img src="https://i.imgur.com/UQFupYL.png" alt="CometWare Logo" class="hero-logo" id="logoClick">
+      <img src="https://i.imgur.com/UQFupYL.png" alt="Comet Logo" class="hero-logo" id="logoClick">
       <p class="hero-subtext">The next generation of exploiting</p>
     </div>
   </section>
   
+  <!-- Features Section -->
   <section id="features" class="section-container">
-    <h2>Features</h2>
+    <h2 class="section-title">Features</h2>
     <div class="cards-container">
       <div class="card">
         <div class="card-title">Optimized</div>
@@ -723,8 +833,9 @@
     </div>
   </section>
   
+  <!-- Games Section -->
   <section id="games" class="section-container">
-    <h2>Supported Games</h2>
+    <h2 class="section-title">Supported Games</h2>
     <div class="cards-container">
       <div class="card">
         <div class="card-title">Bedwars</div>
@@ -741,8 +852,9 @@
     </div>
   </section>
   
+  <!-- Executors Section -->
   <section id="executors" class="section-container">
-    <h2>Recommended Executors</h2>
+    <h2 class="section-title">Recommended Executors</h2>
     <div class="cards-container">
       <div class="card">
         <div class="card-title">AWP.gg</div>
@@ -759,9 +871,10 @@
     </div>
   </section>
   
+  <!-- Download Section -->
   <section class="section-container" id="download-section">
-    <div class="premium-button-container">
-      <a href="https://usecomet.xyz/script" class="download-button script-button" target="_blank">
+    <div class="button-container">
+      <a href="https://usecomet.xyz/script" class="button button-script">
         <div class="button-icon">
           <i class="fas fa-file-code"></i>
         </div>
@@ -771,7 +884,7 @@
         </div>
       </a>
       
-      <a href="https://usecomet.xyz/premium" class="download-button premium-button-main" target="_blank">
+      <a href="https://usecomet.xyz/premium" class="button button-premium">
         <div class="button-icon">
           <i class="fas fa-crown"></i>
         </div>
@@ -783,11 +896,14 @@
     </div>
   </section>
   
+  <!-- Spacer -->
   <div style="height: 100px;"></div>
   
+  <!-- Back to Top Button -->
   <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
 
   <script>
+    /* ========== Utility Functions ========== */
     function throttle(func, limit) {
       let lastFunc;
       let lastRan;
@@ -809,6 +925,7 @@
       };
     }
 
+    /* ========== Star Background ========== */
     function createStars() {
       const container = document.getElementById('stars-container');
       if (!container) return;
@@ -835,6 +952,7 @@
       container.appendChild(fragment);
     }
     
+    /* ========== Tilt Effect ========== */
     function initTiltEffect(elements, maxTilt = 10) {
       elements.forEach(el => {
         let isActive = false;
@@ -875,6 +993,7 @@
       });
     }
     
+    /* ========== Back to Top Button ========== */
     function initBackToTop() {
       const btn = document.getElementById('backToTop');
       if (!btn) return;
@@ -889,6 +1008,7 @@
       });
     }
     
+    /* ========== Scroll Animations ========== */
     function initScrollAnimations() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -896,12 +1016,17 @@
             entry.target.classList.add('visible');
           }
         });
-      }, { threshold: 0.1 });
+      }, { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
       
-      const elements = document.querySelectorAll('.section-container, .card, .download-button');
-      elements.forEach(el => observer.observe(el));
+      document.querySelectorAll('.section-container, .card, .button, .nav-button').forEach(el => {
+        observer.observe(el);
+      });
     }
     
+    /* ========== Logo Click ========== */
     function initLogoClick() {
       const logo = document.getElementById('logoClick');
       if (!logo) return;
@@ -918,33 +1043,13 @@
             logo.style.transform = 'scale(1)';
             logo.style.filter = 'drop-shadow(0 15px 30px rgba(67, 97, 238, 0.4))';
             
-            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            const duration = 800;
-            let startTime = null;
-            
-            function animation(currentTime) {
-              if (!startTime) startTime = currentTime;
-              const timeElapsed = currentTime - startTime;
-              const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
-              window.scrollTo(0, run);
-              if (timeElapsed < duration) requestAnimationFrame(animation);
-            }
-            
-            function easeInOutQuad(t, b, c, d) {
-              t /= d/2;
-              if (t < 1) return c/2*t*t + b;
-              t--;
-              return -c/2 * (t*(t-2) - 1) + b;
-            }
-            
-            requestAnimationFrame(animation);
+            target.scrollIntoView({ behavior: 'smooth' });
           }, 150);
         }
       });
     }
     
+    /* ========== Security ========== */
     function initSecurity() {
       document.addEventListener('contextmenu', (e) => {
         e.preventDefault();
@@ -957,16 +1062,20 @@
       });
     }
     
+    /* ========== Top Buttons Animation ========== */
     function initTopButtons() {
       setTimeout(() => {
-        document.querySelectorAll('.top-button').forEach(btn => {
-          btn.classList.add('visible');
+        document.querySelectorAll('.nav-button').forEach((btn, index) => {
+          setTimeout(() => {
+            btn.classList.add('visible');
+          }, index * 100);
         });
       }, 500);
     }
     
+    /* ========== Executors Button Toggle ========== */
     function enableExecutorsButton(enable = true) {
-      const executorsBtn = document.querySelector('.executors-button');
+      const executorsBtn = document.querySelector('.button-executors');
       if (executorsBtn) {
         if (enable) {
           executorsBtn.classList.remove('disabled');
@@ -978,10 +1087,11 @@
       }
     }
     
+    /* ========== Initialize Everything ========== */
     document.addEventListener('DOMContentLoaded', () => {
       createStars();
       initTiltEffect(document.querySelectorAll('.card'), 8);
-      initTiltEffect(document.querySelectorAll('.download-button'), 5);
+      initTiltEffect(document.querySelectorAll('.button'), 5);
       initTiltEffect([document.querySelector('.hero-logo')], 3);
       initBackToTop();
       initScrollAnimations();
