@@ -7,7 +7,7 @@
   <title>Comet</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg">
 
   <style>
     /* ========== CSS Variables ========== */
@@ -541,6 +541,8 @@
       opacity: 0;
       transform: translateY(-20px);
       text-decoration: none;
+      position: relative;
+      overflow: hidden;
     }
 
     .nav-button.visible {
@@ -550,17 +552,27 @@
 
     .nav-button i {
       margin-right: 0.5rem;
-      transition: transform var(--transition-fast) var(--easing-smooth);
+      transition: transform var(--transition-medium) var(--easing-smooth);
     }
 
-    /* Status Button - Premium Design */
-    .button-status {
+    /* Base Button Styles */
+    .nav-button {
       background: rgba(30, 30, 30, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
       transition: all var(--transition-medium) var(--easing-smooth);
-      position: relative;
-      overflow: hidden;
+    }
+
+    .nav-button:hover {
+      background: rgba(40, 40, 40, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    /* Status Button */
+    .button-status {
+      background: rgba(30, 30, 30, 0.4);
+      border: 1px solid rgba(232, 37, 7, 0.3);
     }
 
     .status-indicator {
@@ -568,30 +580,17 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background-color: var(--online);
+      background-color: var(--offline);
       margin-right: 0.75rem;
       position: relative;
-      box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+      box-shadow: 0 0 0 0 rgba(232, 37, 7);
       animation: pulseStatus 2s infinite;
     }
 
-    .button-status:hover {
-      background: rgba(40, 40, 40, 0.5);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-    }
-
-    .button-status:hover .status-indicator {
-      animation: pulseStatus 1s infinite, bounce 0.5s;
-    }
-
-    .button-status i {
-      color: var(--online);
-      transition: transform var(--transition-medium) var(--easing-smooth);
-    }
-
-    .button-status:hover i {
-      transform: rotate(360deg);
+    @keyframes pulseStatus {
+      0% { box-shadow: 0 0 0 0 rgba(232, 37, 7, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(232, 37, 7,0); }
+      100% { box-shadow: 0 0 0 0 rgba(232, 37, 7,0); }
     }
 
     /* Executors Button */
@@ -603,13 +602,10 @@
 
     .button-executors:hover {
       background: rgba(67, 97, 238, 0.3);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.2);
+      color: #ffffff;
     }
 
     .button-executors:hover i {
-      transform: scale(1.15);
-      color: #ffffff;
       animation: boltPulse 0.5s ease-out;
     }
 
@@ -628,19 +624,40 @@
 
     .button-discord:hover {
       background: rgba(114, 137, 218, 0.3);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(114, 137, 218, 0.2);
+      color: #ffffff;
     }
 
     .button-discord:hover i {
-      transform: scale(1.15);
-      color: #ffffff;
-      animation: discordFloat 1.5s ease-in-out infinite;
+      animation: float 1.5s ease-in-out infinite;
     }
 
-    @keyframes discordFloat {
-      0%, 100% { transform: translateY(0) scale(1.15); }
-      50% { transform: translateY(-3px) scale(1.15); }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Versions Button */
+    .button-versions {
+      background: rgba(106, 76, 147, 0.2);
+      border: 1px solid rgba(106, 76, 147, 0.3);
+      color: #c8a8ff;
+    }
+
+    .button-versions:hover {
+      background: rgba(106, 76, 147, 0.3);
+      color: #e2d1ff;
+    }
+
+    .button-versions:hover i {
+      animation: branchShake 0.4s ease-out;
+    }
+
+    @keyframes branchShake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+      75% { transform: rotate(-3deg); }
+      100% { transform: rotate(0deg); }
     }
 
     /* Disabled State */
@@ -770,146 +787,6 @@
         flex-direction: column;
         align-items: center;
       }
-      @media (max-width: 768px) {
-  .button-versions {
-    padding-right: 1.5rem;
-  }
-  
-  .version-dropdown-arrow {
-    right: 0.75rem;
-  }
-}
-
-    @media (max-width: 480px) {
-      .button-versions .button-text {
-        display: none;
-      }
-      
-      .button-versions {
-        padding: 0.5rem;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .version-dropdown-arrow {
-        display: none;
-      }
-    }
-    /* Enhanced Versions Button */
-    .button-versions {
-      background: linear-gradient(135deg, rgba(106, 76, 147, 0.2), rgba(106, 76, 147, 0.1));
-      border: 1px solid rgba(106, 76, 147, 0.3);
-      color: #c8a8ff;
-      position: relative;
-      overflow: hidden;
-      transition: all var(--transition-medium) var(--easing-smooth);
-      padding-right: 2.5rem;
-    }
-    
-    .version-pulse {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, rgba(177, 156, 217, 0.4) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity var(--transition-medium) var(--easing-smooth);
-      border-radius: 0.75rem;
-    }
-    
-    .button-versions:hover {
-      background: linear-gradient(135deg, rgba(106, 76, 147, 0.3), rgba(106, 76, 147, 0.2));
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(106, 76, 147, 0.3);
-      color: #e2d1ff;
-    }
-    
-    .button-versions:hover .version-pulse {
-      opacity: 1;
-      animation: versionPulse 2s infinite var(--easing-smooth);
-    }
-    
-    .button-versions i {
-      transition: all var(--transition-medium) var(--easing-smooth);
-      position: relative;
-      z-index: 2;
-    }
-    
-    .button-versions:hover i {
-      transform: scale(1.2);
-      color: #ffffff;
-      text-shadow: 0 0 10px rgba(200, 168, 255, 0.7);
-    }
-    
-    .version-dropdown-arrow {
-      position: absolute;
-      right: 1rem;
-      transition: all var(--transition-medium) var(--easing-smooth);
-      opacity: 0.7;
-    }
-    
-    .button-versions:hover .version-dropdown-arrow {
-      transform: translateY(2px);
-      opacity: 1;
-      animation: bounceDown 1s infinite;
-    }
-    
-    .button-text {
-      position: relative;
-      z-index: 2;
-      transition: all var(--transition-medium) var(--easing-smooth);
-    }
-    
-    .button-versions:hover .button-text {
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 8px rgba(200, 168, 255, 0.5);
-    }
-    
-    /* Animations */
-    @keyframes versionPulse {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      70% { transform: scale(1.1); opacity: 0; }
-      100% { opacity: 0; }
-    }
-    
-    @keyframes bounceDown {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(3px); }
-    }
-    
-    @keyframes branchShake {
-      0% { transform: rotate(0deg) scale(1.2); }
-      25% { transform: rotate(-5deg) scale(1.2); }
-      50% { transform: rotate(5deg) scale(1.2); }
-      75% { transform: rotate(-3deg) scale(1.2); }
-      100% { transform: rotate(0deg) scale(1.2); }
-    }
-    
-    /* Button active state */
-    .button-versions:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 5px 15px rgba(106, 76, 147, 0.4);
-    }
-    
-    .button-versions:active i {
-      animation: branchShake 0.4s ease-out;
-    }
-    
-    /* Adjust top-nav-buttons for even spacing */
-    .top-nav-buttons {
-      left: 1.5rem;
-      right: auto;
-      justify-content: flex-start;
-      gap: 1rem;
-      width: auto;
-    }
-
-      .button {
-        width: 100%;
-        max-width: 280px;
-      }
     }
   </style>
 </head>
@@ -917,25 +794,24 @@
   <div id="stars-container"></div>
   
   <!-- Top Navigation Buttons -->
-<div class="top-nav-buttons">
-  <a class="nav-button button-versions" href="https://usecomet.xyz/versions">
-    <span class="version-pulse"></span>
-    <i class="fas fa-code-branch"></i> 
-    <span class="button-text">Versions</span>
-    <span class="version-dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
-  </a>
-  <a class="nav-button button-status" href="https://usecomet.xyz/status">
-    <span class="status-indicator"></span>
-    Status
-    <i class="fas fa-circle-notch"></i>
-  </a>
-  <a class="nav-button button-executors disabled" href="https://usecomet.xyz/executors">
-    <i class="fas fa-bolt"></i> Executors
-  </a>
-  <a class="nav-button button-discord" href="https://discord.gg/qeFQ57eqtj">
-    <i class="fab fa-discord"></i> Discord
-  </a>
-</div>
+  <div class="top-nav-buttons">
+    <a class="nav-button button-versions" href="https://usecomet.xyz/versions">
+      <i class="fas fa-code-branch"></i> 
+      <span>Versions</span>
+    </a>
+    <a class="nav-button button-status" href="https://usecomet.xyz/status">
+      <span class="status-indicator"></span>
+      <span>Status</span>
+    </a>
+    <a class="nav-button button-executors disabled" href="https://usecomet.xyz/executors">
+      <i class="fas fa-bolt"></i> 
+      <span>Executors</span>
+    </a>
+    <a class="nav-button button-discord" href="https://discord.gg/qeFQ57eqtj">
+      <i class="fab fa-discord"></i> 
+      <span>Discord</span>
+    </a>
+  </div>
   
   <!-- Hero Section -->
   <section class="hero">
