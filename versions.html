@@ -3,30 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comet</title>
+  <title>Comet - Roblox Version Tracker</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg">
   <style>
     :root {
       --primary-color: #00a2ff;
+      --primary-light: rgba(0, 162, 255, 0.2);
       --secondary-color: #7b2dff;
+      --secondary-light: rgba(123, 45, 255, 0.2);
       --accent-color: #ff3c5f;
+      --accent-light: rgba(255, 60, 95, 0.2);
       --background-color: #0f172a;
       --card-bg: rgba(15, 23, 42, 0.95);
       --text-color: #e2e8f0;
       --text-muted: #94a3b8;
       --font-primary: 'Orbitron', sans-serif;
       --font-secondary: 'Montserrat', sans-serif;
-      --transition-duration: 0.4s;
-      --easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-duration: 0.5s;
+      --easing: cubic-bezier(0.16, 1, 0.3, 1);
       --glow-intensity: 0;
+      --particle-opacity: 0.6;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -42,8 +50,10 @@
       background: radial-gradient(ellipse at bottom, #1e293b 0%, var(--background-color) 100%);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
     }
 
+    /* Cosmic Background with GPU-optimized particles */
     .cosmic-bg {
       position: fixed;
       top: 0;
@@ -52,6 +62,8 @@
       height: 100%;
       z-index: -2;
       overflow: hidden;
+      pointer-events: none;
+      will-change: transform;
     }
 
     .star {
@@ -62,6 +74,9 @@
       border-radius: 50%;
       animation: float 15s infinite ease-in-out;
       will-change: transform;
+      opacity: var(--particle-opacity);
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .comet {
@@ -74,6 +89,8 @@
       z-index: -1;
       opacity: 0;
       animation-timing-function: linear;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .comet::after {
@@ -87,6 +104,7 @@
       transform: translateY(-50%);
     }
 
+    /* Main Container with Glassmorphism Effect */
     .version-container {
       width: 90%;
       max-width: 1000px;
@@ -103,8 +121,9 @@
       overflow: visible;
       transform-style: preserve-3d;
       transition: all var(--transition-duration) var(--easing);
-      will-change: transform;
+      will-change: transform, box-shadow;
       margin: 2rem 0;
+      transform: perspective(1000px);
     }
 
     .version-container::before {
@@ -117,6 +136,7 @@
       background: radial-gradient(circle, rgba(106,17,203,0.2) 0%, rgba(0,0,0,0) 70%);
       z-index: -1;
       animation: rotate 30s linear infinite;
+      pointer-events: none;
     }
 
     .version-container::after {
@@ -134,6 +154,7 @@
       pointer-events: none;
     }
 
+    /* Typography */
     h1 {
       font-family: var(--font-primary);
       font-size: clamp(2.5rem, 5vw, 3.5rem);
@@ -146,6 +167,8 @@
       letter-spacing: 2px;
       line-height: 1.2;
       position: relative;
+      font-weight: 700;
+      transform: translateZ(0);
     }
 
     h1::after {
@@ -159,9 +182,10 @@
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       border-radius: 4px;
       opacity: 0.7;
+      transition: all var(--transition-duration) var(--easing);
     }
 
-    /* Improved Live Status Indicator */
+    /* Live Status with Enhanced Animation */
     .live-status-container {
       display: flex;
       justify-content: center;
@@ -185,10 +209,12 @@
       border: 1px solid rgba(255, 60, 95, 0.3);
       box-shadow: 0 0 20px rgba(255, 60, 95, 0.2);
       transition: all var(--transition-duration) var(--easing);
+      transform: translateZ(0);
+      will-change: transform, box-shadow;
     }
 
     .live-status:hover {
-      transform: translateY(-2px);
+      transform: translateY(-2px) scale(1.05);
       box-shadow: 0 0 30px rgba(255, 60, 95, 0.3);
     }
 
@@ -219,7 +245,8 @@
       margin-right: 10px;
       position: relative;
       box-shadow: 0 0 0 0 rgba(255, 60, 95, 0.7);
-      animation: livePulse 1.5s infinite;
+      animation: livePulse 1.5s infinite var(--easing);
+      transform: translateZ(0);
     }
 
     .live-pulse::before {
@@ -232,15 +259,23 @@
       border-radius: 50%;
       background: var(--accent-color);
       opacity: 0.4;
-      animation: livePulseRing 1.5s infinite;
+      animation: livePulseRing 1.5s infinite var(--easing);
     }
 
+    /* Last Updated with Smooth Animation */
     .last-updated {
       text-align: center;
       color: var(--text-muted);
       margin-bottom: 2rem;
       font-size: 0.9rem;
       position: relative;
+      opacity: 0.9;
+      transition: all var(--transition-duration) var(--easing);
+    }
+
+    .last-updated:hover {
+      opacity: 1;
+      transform: translateY(-2px);
     }
 
     .last-updated::before {
@@ -252,10 +287,12 @@
       animation: spinSlow 10s linear infinite;
     }
 
+    /* Version Grid with Enhanced Cards */
     .version-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
+      perspective: 1000px;
     }
 
     .version-card {
@@ -267,15 +304,16 @@
       transition: all var(--transition-duration) var(--easing);
       border: 1px solid rgba(255, 255, 255, 0.1);
       position: relative;
-      overflow: visible;
+      overflow: hidden;
       transform-style: preserve-3d;
-      will-change: transform;
+      will-change: transform, box-shadow;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      transform: translateZ(0);
     }
 
     .version-card:hover {
-      transform: translateY(-10px) scale(1.03);
+      transform: translateY(-10px) scale(1.03) rotateX(1deg) rotateY(1deg);
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
       background: rgba(30, 41, 59, 0.8);
       border-color: rgba(255, 255, 255, 0.2);
@@ -289,8 +327,8 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(45deg, 
-        rgba(0, 162, 255, 0.2), 
-        rgba(123, 45, 255, 0.2));
+        var(--primary-light), 
+        var(--secondary-light));
       z-index: -1;
       opacity: 0;
       transition: opacity var(--transition-duration) var(--easing);
@@ -300,6 +338,28 @@
       opacity: 1;
     }
 
+    .version-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0, 162, 255, 0.3), rgba(123, 45, 255, 0.3));
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--transition-duration) var(--easing);
+    }
+
+    .version-card:hover::after {
+      opacity: 1;
+    }
+
+    /* Platform Header with Smooth Icon Animation */
     .platform-header {
       display: flex;
       align-items: center;
@@ -321,15 +381,18 @@
       justify-content: center;
       margin-right: 1.25rem;
       font-size: 1.75rem;
-      background: linear-gradient(135deg, rgba(0, 162, 255, 0.25), rgba(123, 45, 255, 0.25));
+      background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
       color: white;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       transition: all var(--transition-duration) var(--easing);
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .version-card:hover .platform-icon {
       transform: rotate(15deg) scale(1.15);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
     }
 
     .platform-title {
@@ -337,8 +400,14 @@
       font-weight: 700;
       color: var(--text-color);
       font-family: var(--font-secondary);
+      transition: all var(--transition-duration) var(--easing);
     }
 
+    .version-card:hover .platform-title {
+      color: white;
+    }
+
+    /* Action Buttons with Fluid Animation */
     .version-actions {
       display: flex;
       gap: 0.75rem;
@@ -358,6 +427,9 @@
       position: relative;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       z-index: 2;
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+      transform: translateZ(0);
     }
 
     .download-btn {
@@ -369,7 +441,7 @@
     }
 
     .download-btn:hover, .copy-btn:hover {
-      transform: translateY(-5px) scale(1.15);
+      transform: translateY(-5px) scale(1.15) rotate(5deg);
       box-shadow: 0 12px 25px rgba(0, 162, 255, 0.5);
     }
 
@@ -382,7 +454,7 @@
       position: absolute;
       top: -45px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(10px);
       background: rgba(0, 0, 0, 0.9);
       color: white;
       padding: 8px 15px;
@@ -391,16 +463,19 @@
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
-      transition: all var(--transition-duration);
+      transition: all var(--transition-duration) var(--easing);
       z-index: 10;
       min-width: max-content;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .download-btn:hover::after, .copy-btn:hover::after {
       opacity: 1;
-      transform: translateX(-50%) translateY(-5px);
+      transform: translateX(-50%) translateY(0);
     }
 
+    /* Version Info Display */
     .version-info {
       margin-top: 1rem;
     }
@@ -412,6 +487,11 @@
       letter-spacing: 1.5px;
       margin-bottom: 0.75rem;
       font-weight: 600;
+      transition: all var(--transition-duration) var(--easing);
+    }
+
+    .version-card:hover .version-label {
+      color: var(--primary-color);
     }
 
     .version-display {
@@ -423,6 +503,7 @@
       transition: all var(--transition-duration) var(--easing);
       overflow: hidden;
       position: relative;
+      transform: translateZ(0);
     }
 
     .version-card:hover .version-display {
@@ -437,14 +518,20 @@
       word-break: break-all;
       padding: 1rem;
       flex-grow: 1;
+      transition: all var(--transition-duration) var(--easing);
     }
 
-    /* Improved Refresh Button */
+    .version-card:hover .version-value {
+      color: white;
+    }
+
+    /* Refresh Button with Premium Animation */
     .refresh-container {
       display: flex;
       justify-content: center;
       margin-top: 3rem;
       position: relative;
+      perspective: 1000px;
     }
 
     .refresh-btn {
@@ -468,10 +555,13 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+      transform: translateZ(0);
     }
 
     .refresh-btn:hover {
-      transform: translateY(-5px) scale(1.1);
+      transform: translateY(-5px) scale(1.1) rotateX(5deg);
       box-shadow: 
         0 15px 35px rgba(0, 0, 0, 0.4),
         0 0 30px rgba(100, 108, 255, 0.3);
@@ -500,6 +590,7 @@
 
     .refresh-btn i {
       transition: transform var(--transition-duration) var(--easing);
+      transform-style: preserve-3d;
     }
 
     .refresh-btn:hover i {
@@ -510,7 +601,7 @@
       position: absolute;
       top: -40px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(10px);
       background: rgba(0, 0, 0, 0.9);
       color: white;
       padding: 6px 12px;
@@ -519,16 +610,18 @@
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
-      transition: all var(--transition-duration);
+      transition: all var(--transition-duration) var(--easing);
       z-index: 10;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .refresh-container:hover .refresh-tooltip {
       opacity: 1;
-      transform: translateX(-50%) translateY(-5px);
+      transform: translateX(-50%) translateY(0);
     }
 
-    /* Loading state */
+    /* Loading State with Smooth Shimmer */
     .loading {
       position: relative;
       overflow: hidden;
@@ -544,39 +637,65 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.05),
         transparent
       );
       animation: loadingShimmer 2s infinite;
       z-index: 1;
+      transform: translateZ(0);
     }
 
-    /* Success notification */
+    /* Error State */
+    .error {
+      border-left-color: var(--accent-color) !important;
+    }
+
+    .error .version-value {
+      color: var(--accent-color) !important;
+    }
+
+    /* Success Notification with Fluid Animation */
     .notification {
       position: fixed;
       bottom: 30px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(20px);
       background: rgba(0, 0, 0, 0.9);
       color: white;
       padding: 15px 30px;
       border-radius: 10px;
       font-size: 1rem;
       opacity: 0;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 100;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       pointer-events: none;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
     }
 
     .notification.show {
       opacity: 1;
-      transform: translateX(-50%) translateY(-10px);
+      transform: translateX(-50%) translateY(0);
     }
 
-    /* Animations */
+    /* Floating Particles */
+    .floating-particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: var(--particle-opacity);
+      pointer-events: none;
+      transform: translateZ(0);
+      animation: floatParticle 15s infinite ease-in-out;
+      will-change: transform;
+    }
+
+    /* Animations with Smooth Easing */
     @keyframes livePulse {
       0%, 100% { transform: scale(1); opacity: 0.8; }
       50% { transform: scale(1.3); opacity: 1; }
@@ -591,6 +710,13 @@
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg); }
       50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+      25% { transform: translateY(-15px) translateX(5px) scale(1.1); }
+      50% { transform: translateY(5px) translateX(-5px) scale(0.9); }
+      75% { transform: translateY(-10px) translateX(3px) scale(1.05); }
     }
 
     @keyframes rotate {
@@ -630,23 +756,31 @@
     /* Floating animation for container */
     @keyframes gentleFloat {
       0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
-      50% { transform: translateY(-15px) rotateX(3deg) rotateY(3deg); }
+      25% { transform: translateY(-10px) rotateX(1deg) rotateY(1deg); }
+      50% { transform: translateY(-15px) rotateX(0deg) rotateY(0deg); }
+      75% { transform: translateY(-8px) rotateX(-1deg) rotateY(-1deg); }
     }
 
     .version-container {
-      animation: gentleFloat 10s ease-in-out infinite;
+      animation: gentleFloat 12s ease-in-out infinite;
     }
 
     /* Glow effect on hover */
     .version-container:hover {
       --glow-intensity: 0.2;
+      --particle-opacity: 0.8;
     }
 
-    /* Responsive */
+    /* Responsive Design */
     @media (max-width: 768px) {
+      :root {
+        --particle-opacity: 0.4;
+      }
+      
       .version-container {
         padding: 1.75rem;
         border-radius: 24px;
+        animation: none;
       }
       
       .version-grid {
@@ -667,6 +801,12 @@
       .download-btn::after, .copy-btn::after {
         top: -50px;
         font-size: 0.8rem;
+      }
+      
+      .refresh-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
       }
     }
 
@@ -698,6 +838,10 @@
       .loading::after {
         animation: none !important;
       }
+      
+      .comet, .floating-particle {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -706,12 +850,12 @@
   <div class="notification" id="notification">Copied to clipboard!</div>
   
   <div class="version-container">
-    <h1>Versions</h1>
+    <h1>Roblox Version Tracker</h1>
     
     <div class="live-status-container">
       <div class="live-status">
         <div class="live-pulse"></div>
-        <span>LIVE</span>
+        <span>LIVE STATUS</span>
       </div>
     </div>
     
@@ -798,6 +942,10 @@
         this.fetchAllVersions();
         this.updateLastUpdated();
         this.startCometInterval();
+        this.createFloatingParticles();
+        
+        // Add parallax effect to container
+        this.setupParallaxEffect();
       }
       
       createCosmicBackground() {
@@ -811,7 +959,7 @@
           
           star.style.left = `${Math.random() * 100}%`;
           star.style.top = `${Math.random() * 100}%`;
-          star.style.opacity = Math.random();
+          star.style.opacity = Math.random() * 0.8 + 0.2;
           const size = 1 + Math.random() * 2;
           star.style.width = `${size}px`;
           star.style.height = `${size}px`;
@@ -822,6 +970,26 @@
         }
         
         cosmicBg.appendChild(fragment);
+      }
+      
+      createFloatingParticles() {
+        const cosmicBg = document.getElementById('cosmic-bg');
+        const particleCount = window.innerWidth < 768 ? 15 : 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'floating-particle';
+          
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.opacity = Math.random() * 0.6 + 0.2;
+          particle.style.width = `${2 + Math.random() * 3}px`;
+          particle.style.height = particle.style.width;
+          particle.style.animationDelay = `${Math.random() * 10}s`;
+          particle.style.animationDuration = `${10 + Math.random() * 20}s`;
+          
+          cosmicBg.appendChild(particle);
+        }
       }
       
       createComet() {
@@ -835,10 +1003,14 @@
         const topPos = Math.random() * 20;
         const duration = 10 + Math.random() * 10;
         const animationType = Math.random() > 0.5 ? 'cometFly' : 'cometFly2';
+        const size = 3 + Math.random() * 3;
         
         comet.style.left = `${leftPos}%`;
         comet.style.top = `${topPos}%`;
+        comet.style.width = `${size}px`;
+        comet.style.height = `${size}px`;
         comet.style.animation = `${animationType} ${duration}s linear`;
+        comet.style.opacity = Math.random() * 0.8 + 0.2;
         
         document.body.appendChild(comet);
         
@@ -858,6 +1030,24 @@
             this.createComet();
           }
         }, 5000 + Math.random() * 10000);
+      }
+      
+      setupParallaxEffect() {
+        const container = document.querySelector('.version-container');
+        
+        document.addEventListener('mousemove', (e) => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          
+          const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+          const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+          
+          container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        
+        // Reset when mouse leaves
+        document.addEventListener('mouseleave', () => {
+          container.style.transform = 'rotateY(0) rotateX(0)';
+        });
       }
       
       async fetchAllVersions() {
@@ -986,7 +1176,7 @@
               </div>
               ${showActions ? `
                 <div class="version-actions">
-                  <a href="${downloadUrl}" class="download-btn" data-tooltip="Download ${platform.name} version" target="_blank">
+                  <a href="${downloadUrl}" class="download-btn" data-tooltip="Download ${platform.name} version" target="_blank" rel="noopener noreferrer">
                     <i class="fas fa-download"></i>
                   </a>
                   <button class="copy-btn" data-tooltip="Copy version" data-version="${data.current}">
@@ -1118,7 +1308,7 @@
       handleReducedMotion(query) {
         if (query.matches) {
           clearInterval(this.cometInterval);
-          document.querySelectorAll('.comet').forEach(comet => comet.remove());
+          document.querySelectorAll('.comet, .floating-particle').forEach(el => el.remove());
           document.querySelectorAll('.star').forEach(star => {
             star.style.animation = 'none';
           });
@@ -1128,7 +1318,10 @@
     
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
-      new RobloxVersionTracker();
+      const tracker = new RobloxVersionTracker();
+      
+      // Expose tracker to console for debugging
+      window.tracker = tracker;
     });
   </script>
 </body>
