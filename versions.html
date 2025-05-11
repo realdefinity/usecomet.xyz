@@ -23,8 +23,8 @@
       --text-muted: #94a3b8;
       --font-primary: 'JetBrains Mono', monospace;
       --font-secondary: 'Inter', sans-serif;
-      --transition-duration: 0.3s;
-      --easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-duration: 0.4s;
+      --easing: cubic-bezier(0.25, 0.8, 0.25, 1);
       --border-radius: 16px;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -59,19 +59,26 @@
       line-height: 1.5;
     }
 
-    /* Subtle background pattern */
-    .background-pattern {
+    /* Subtle background animation */
+    .background-animation {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
-      opacity: 0.05;
-      background-image: 
-        radial-gradient(circle at 25% 25%, var(--primary-color) 1px, transparent 1px),
-        radial-gradient(circle at 75% 75%, var(--secondary-color) 1px, transparent 1px);
-      background-size: 40px 40px;
+      overflow: hidden;
+    }
+
+    .background-animation::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      animation: rotate 30s linear infinite;
       pointer-events: none;
     }
 
@@ -90,6 +97,13 @@
       overflow: visible;
       margin: 2rem 0;
       transition: all var(--transition-duration) var(--easing);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .version-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
     }
 
     .version-container::after {
@@ -106,7 +120,7 @@
       mask-composite: exclude;
       pointer-events: none;
       opacity: 0.3;
-      transition: opacity var(--transition-duration) var(--easing);
+      transition: all var(--transition-duration) var(--easing);
     }
 
     .version-container:hover::after {
@@ -125,6 +139,7 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       line-height: 1.2;
+      transform: translateZ(0);
     }
 
     /* Status Indicator */
@@ -132,6 +147,7 @@
       display: flex;
       justify-content: center;
       margin: 0.5rem auto 1.5rem;
+      perspective: 1000px;
     }
 
     .status-indicator {
@@ -144,6 +160,13 @@
       font-size: 0.875rem;
       font-weight: 600;
       border: 1px solid rgba(16, 185, 129, 0.3);
+      transform-style: preserve-3d;
+      transition: all var(--transition-duration) var(--easing);
+    }
+
+    .status-indicator:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
     }
 
     .status-dot {
@@ -151,7 +174,8 @@
       height: 8px;
       border-radius: 50%;
       background: var(--success-color);
-      animation: pulse 2s infinite;
+      animation: pulse 2s infinite var(--easing);
+      transform-style: preserve-3d;
     }
 
     /* Version Grid */
@@ -159,6 +183,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.25rem;
+      perspective: 1000px;
     }
 
     /* Version Card */
@@ -172,12 +197,32 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       position: relative;
       overflow: visible;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .version-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+      box-shadow: var(--shadow-xl);
       border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(30, 41, 59, 0.8);
+    }
+
+    .version-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--primary-light), var(--secondary-light));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity var(--transition-duration) var(--easing);
+    }
+
+    .version-card:hover::before {
+      opacity: 0.3;
     }
 
     .platform-header {
@@ -204,21 +249,24 @@
       background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
       color: white;
       flex-shrink: 0;
-      transition: transform var(--transition-duration) var(--easing);
+      transition: all var(--transition-duration) var(--easing);
+      transform-style: preserve-3d;
     }
 
     .version-card:hover .platform-icon {
-      transform: scale(1.1);
+      transform: rotate(15deg) scale(1.1);
+      background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
     }
 
     .platform-title {
       font-size: 1.125rem;
       font-weight: 600;
-      transition: color var(--transition-duration) var(--easing);
+      transition: all var(--transition-duration) var(--easing);
     }
 
     .version-card:hover .platform-title {
       color: var(--primary-color);
+      transform: translateX(3px);
     }
 
     /* Version Info */
@@ -233,11 +281,12 @@
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
       font-weight: 600;
-      transition: color var(--transition-duration) var(--easing);
+      transition: all var(--transition-duration) var(--easing);
     }
 
     .version-card:hover .version-label {
       color: var(--secondary-color);
+      letter-spacing: 0.08em;
     }
 
     .version-display {
@@ -251,17 +300,19 @@
       position: relative;
       overflow: hidden;
       transition: all var(--transition-duration) var(--easing);
+      transform-style: preserve-3d;
     }
 
     .version-card:hover .version-display {
       background: rgba(0, 0, 0, 0.3);
       border-left: 3px solid var(--primary-color);
+      transform: translateZ(10px);
     }
 
     .version-value {
       flex-grow: 1;
       word-break: break-all;
-      transition: color var(--transition-duration) var(--easing);
+      transition: all var(--transition-duration) var(--easing);
     }
 
     .version-card:hover .version-value {
@@ -286,16 +337,17 @@
       cursor: pointer;
       transition: all var(--transition-duration) var(--easing);
       position: relative;
-      background: rgba(255, 255, 255, 0.1);
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+      transform: translateY(-4px) translateZ(5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
 
     .action-btn:active {
-      transform: translateY(0);
+      transform: translateY(0) translateZ(0);
     }
 
     .action-btn[data-tooltip]::after {
@@ -320,11 +372,13 @@
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
+      transform-style: preserve-3d;
+      transform-origin: bottom center;
     }
 
     .action-btn:hover::after {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(-50%) translateY(0) translateZ(10px);
     }
 
     .download-btn {
@@ -341,6 +395,7 @@
       justify-content: center;
       margin-top: 2rem;
       position: relative;
+      perspective: 1000px;
     }
 
     .refresh-btn {
@@ -356,19 +411,21 @@
       cursor: pointer;
       transition: all var(--transition-duration) var(--easing);
       box-shadow: var(--shadow-md);
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .refresh-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px) translateZ(5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     }
 
     .refresh-btn:hover i {
-      animation: spin 0.6s var(--easing);
+      animation: spin 0.8s var(--easing) infinite;
     }
 
     .refresh-btn:active {
-      transform: translateY(0);
+      transform: translateY(0) translateZ(0);
     }
 
     .refresh-btn[data-tooltip]::after {
@@ -389,11 +446,12 @@
       z-index: 10;
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
+      transform-style: preserve-3d;
     }
 
     .refresh-container:hover .refresh-btn::after {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(-50%) translateY(0) translateZ(10px);
     }
 
     /* Loading State */
@@ -409,13 +467,15 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-      animation: loading 1.5s infinite;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: loading 1.8s infinite var(--easing);
+      transform: translateZ(0);
     }
 
     /* Error State */
     .error .version-display {
       border-left: 3px solid var(--error-color);
+      animation: shake 0.5s var(--easing);
     }
 
     .error .version-value {
@@ -427,7 +487,7 @@
       position: fixed;
       bottom: 1.5rem;
       left: 50%;
-      transform: translateX(-50%) translateY(20px);
+      transform: translateX(-50%) translateY(20px) scale(0.9);
       background: rgba(0, 0, 0, 0.9);
       color: white;
       padding: 0.75rem 1.5rem;
@@ -438,37 +498,49 @@
       z-index: 100;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
       pointer-events: none;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transform-style: preserve-3d;
     }
 
     .notification.show {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(-50%) translateY(0) scale(1);
     }
 
     /* Animations */
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
     }
 
     @keyframes loading {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% { transform: translateX(-100%) skewX(-15deg); }
+      100% { transform: translateX(100%) skewX(-15deg); }
     }
 
     @keyframes spin {
+      from { transform: rotate(0deg) translateZ(0); }
+      to { transform: rotate(360deg) translateZ(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes rotate {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
 
     /* Responsive Design */
@@ -494,6 +566,10 @@
       .version-display {
         padding: 0.5rem;
       }
+
+      .version-card:hover {
+        transform: translateY(-4px);
+      }
     }
 
     /* Reduced motion */
@@ -504,11 +580,19 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
+      
+      .version-card:hover {
+        transform: none !important;
+      }
+      
+      .refresh-btn:hover i {
+        animation: none !important;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="background-pattern"></div>
+  <div class="background-animation"></div>
   <div class="notification" id="notification">
     <i class="fas fa-check-circle"></i>
     <span>Copied to clipboard!</span>
@@ -706,7 +790,7 @@
           const data = this.versionData[platform.id];
           const card = document.createElement('div');
           card.className = `version-card ${data.loading ? 'loading' : ''} ${data.error ? 'error' : ''}`;
-          card.style.animation = 'fadeIn 0.4s var(--easing) forwards';
+          card.style.animation = 'fadeIn 0.5s var(--easing) forwards';
           
           // Determine what to display
           let versionDisplay = 'Loading...';
@@ -719,9 +803,9 @@
             showActions = true;
           }
           
-          // Create download URL if version is available
+          // Create download URL using the old rdd.latte.to format
           const downloadUrl = showActions ? 
-            `https://setup.rbxcdn.com/${data.current.replace('version-', '')}-Roblox.exe` : 
+            `https://rdd.latte.to/?channel=LIVE&binaryType=${platform.binaryType}&version=${data.current.replace('version-', '')}` : 
             '#';
           
           card.innerHTML = `
@@ -819,6 +903,27 @@
           if (!document.hidden) {
             this.fetchAllVersions();
           }
+        });
+
+        // Add subtle parallax effect
+        this.setupParallax();
+      }
+
+      setupParallax() {
+        const container = document.querySelector('.version-container');
+        
+        document.addEventListener('mousemove', (e) => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          
+          const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+          const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+          
+          container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg) translateY(-5px)`;
+        });
+        
+        // Reset when mouse leaves
+        document.addEventListener('mouseleave', () => {
+          container.style.transform = 'rotateY(0) rotateX(0) translateY(-5px)';
         });
       }
     }
