@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOIDSHIELD PRO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7b2ff7;
+      --primary-dark: #5a1dd9;
+      --secondary: #00f0ff;
+      --dark: #0a0a12;
+      --darker: #050508;
+      --light: #e0e0ff;
+      --lighter: #f8f8ff;
+      --danger: #ff3860;
+      --warning: #ffdd57;
+      --success: #00d1b2;
+      --code-bg: #0f111a;
+      --console-bg: #080811;
+      --border: #2a2a3a;
+      --border-light: #3a3a4a;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: 'Fira Code', monospace;
+      background: var(--dark);
+      color: var(--light);
+      overflow: hidden;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    /* Header */
+    .header {
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      font-size: 1.5rem;
+      color: var(--secondary);
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--lighter), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 1px;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    /* Control Bar */
+    .control-bar {
+      height: 50px;
+      background: var(--darker);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      gap: 12px;
+    }
+    
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .control-group + .control-group {
+      margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid var(--border-light);
+    }
+    
+    .control-label {
+      font-size: 0.8rem;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    select, button {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 4px;
+      background: var(--code-bg);
+      color: var(--light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    
+    select {
+      min-width: 120px;
+    }
+    
+    select:hover, button:not(:disabled):hover {
+      background: var(--border-light);
+      transform: translateY(-1px);
+    }
+    
+    select:focus, button:focus {
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover:not(:disabled) {
+      background: #ff1a4a;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover:not(:disabled) {
+      background: #00b89c;
+    }
+    
+    /* Main Layout */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #editor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    
+    .console-container {
+      flex: 0 0 30%;
+      display: flex;
+      flex-direction: column;
+      background: var(--console-bg);
+      border-left: 1px solid var(--border);
+      overflow: hidden;
+    }
+    
+    .console-header {
+      height: 40px;
+      background: var(--darker);
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--secondary);
+    }
+    
+    .console-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    
+    .console-item {
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+      word-break: break-word;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .log {
+      color: var(--light);
+    }
+    
+    .info {
+      color: var(--secondary);
+    }
+    
+    .warn {
+      color: var(--warning);
+    }
+    
+    .error {
+      color: var(--danger);
+    }
+    
+    .success {
+      color: var(--success);
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+    
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: var(--secondary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      height: 24px;
+      background: var(--darker);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 0.75rem;
+      color: var(--light);
+      border-top: 1px solid var(--border);
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--darker);
+      color: var(--light);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 100;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .console-container {
+        flex: 0 0 200px;
+      }
+      
+      .control-bar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+      }
+      
+      .control-group {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-shield-alt logo-icon"></i>
+        <span class="logo-text">VOIDSHIELD PRO</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" onclick="runCode()">
+          <i class="fas fa-play"></i> Run
+        </button>
+        <button onclick="downloadCode()">
+          <i class="fas fa-download"></i> Export
+        </button>
+      </div>
+    </div>
+    
+    <!-- Control Bar -->
+    <div class="control-bar">
+      <div class="control-group">
+        <span class="control-label">Editor:</span>
+        <select id="themeSelect">
+          <option value="ace/theme/monokai">Monokai</option>
+          <option value="ace/theme/dracula">Dracula</option>
+          <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
+          <option value="ace/theme/tomorrow_night_blue">Tomorrow Night Blue</option>
+          <option value="ace/theme/tomorrow_night_bright">Tomorrow Night Bright</option>
+          <option value="ace/theme/tomorrow_night_eighties">Tomorrow Night 80s</option>
+          <option value="ace/theme/gruvbox">Gruvbox</option>
+          <option value="ace/theme/nord_dark">Nord Dark</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <span class="control-label">Keybindings:</span>
+        <select id="keybindingSelect">
+          <option value="default">Default</option>
+          <option value="ace/keyboard/vim">Vim</option>
+          <option value="ace/keyboard/emacs">Emacs</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <span class="control-label">Tools:</span>
+        <button onclick="clearConsole()" class="tooltip" data-tooltip="Clear Console">
+          <i class="fas fa-broom"></i> Clear
+        </button>
+        <button onclick="removeComments()" class="tooltip" data-tooltip="Remove All Comments">
+          <i class="fas fa-comment-slash"></i> Strip Comments
+        </button>
+        <button onclick="formatCode()" class="tooltip" data-tooltip="Format Code">
+          <i class="fas fa-align-left"></i> Format
+        </button>
+      </div>
+      
+      <div class="control-group">
+        <span class="control-label">Obfuscation:</span>
+        <button onclick="obfuscateCode('light')" class="tooltip" data-tooltip="Light Obfuscation">
+          <i class="fas fa-lock"></i> Light
+        </button>
+        <button onclick="obfuscateCode('medium')" class="btn-primary tooltip" data-tooltip="Medium Obfuscation">
+          <i class="fas fa-lock"></i> Medium
+        </button>
+        <button onclick="obfuscateCode('heavy')" class="btn-danger tooltip" data-tooltip="Heavy Obfuscation">
+          <i class="fas fa-lock"></i> Heavy
+        </button>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="editor-container">
+        <div id="editor"></div>
+      </div>
+      <div class="console-container">
+        <div class="console-header">
+          <i class="fas fa-terminal"></i> Console Output
+        </div>
+        <div class="console-content" id="consoleContainer"></div>
+      </div>
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <i class="fas fa-code"></i>
+        <span id="lineCount">0</span> lines
+      </div>
+      <div class="status-item">
+        <i class="fas fa-keyboard"></i>
+        <span id="currentMode">Default</span> mode
+      </div>
+      <div class="status-item">
+        <i class="fas fa-clock"></i>
+        <span id="lastRun">Not run yet</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ext-language_tools.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ext-beautify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ext-error_marker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ext-statusbar.min.js"></script>
+  <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"></script>
+  
+  <script>
+    // Initialize Ace Editor
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/lua");
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true,
+      enableSnippets: true,
+      fontSize: "14px",
+      tabSize: 2,
+      useSoftTabs: true,
+      showPrintMargin: false,
+      highlightActiveLine: true,
+      highlightSelectedWord: true,
+      showLineNumbers: true,
+      showGutter: true,
+      showFoldWidgets: true,
+      autoScrollEditorIntoView: true,
+      enableMultiselect: true
+    });
+    
+    // Custom Lua snippets
+    editor.completers.push({
+      getCompletions: function(editor, session, pos, prefix, callback) {
+        const completions = [
+          { caption: "function", value: "function ${1:name}(${2:params})\n\t${3}\nend", meta: "keyword" },
+          { caption: "if", value: "if ${1:condition} then\n\t${2}\nend", meta: "keyword" },
+          { caption: "for", value: "for ${1:i} = ${2:1}, ${3:10} do\n\t${4}\nend", meta: "keyword" },
+          { caption: "while", value: "while ${1:condition} do\n\t${2}\nend", meta: "keyword" },
+          { caption: "print", value: 'print("${1:message}")', meta: "function" },
+          { caption: "table.insert", value: "table.insert(${1:table}, ${2:value})", meta: "function" },
+          { caption: "local", value: "local ${1:var} = ${2:value}", meta: "keyword" },
+          { caption: "require", value: 'local ${1:module} = require("${1:module}")', meta: "function" }
+        ];
+        callback(null, completions);
+      }
+    });
+    
+    // Theme selector
+    const themeSelect = document.getElementById("themeSelect");
+    themeSelect.addEventListener("change", function() {
+      editor.setTheme(this.value);
+    });
+    
+    // Keybinding selector
+    const keybindingSelect = document.getElementById("keybindingSelect");
+    keybindingSelect.addEventListener("change", function() {
+      const val = this.value;
+      document.getElementById("currentMode").textContent = val.charAt(0).toUpperCase() + val.slice(1);
+      
+      if (val === "default") {
+        editor.setKeyboardHandler(null);
+      } else if (val === "hybrid") {
+        editor.setKeyboardHandler("ace/keyboard/vim");
+        // Add custom emacs-like commands
+        editor.commands.addCommand({
+          name: "killLine",
+          bindKey: { win: "Ctrl-K", mac: "Command-K" },
+          exec: function(editor) {
+            const pos = editor.getCursorPosition();
+            const line = editor.session.getLine(pos.row);
+            const killedText = line.substring(pos.column);
+            editor.session.remove({
+              start: pos,
+              end: { row: pos.row, column: line.length }
+            });
+            appendToConsole(`Killed: ${killedText}`, "info");
+          }
+        });
+      } else {
+        editor.setKeyboardHandler(val);
+      }
+    });
+    
+    // Update line count
+    function updateLineCount() {
+      const lineCount = editor.session.getLength();
+      document.getElementById("lineCount").textContent = lineCount;
+    }
+    
+    editor.session.on("change", updateLineCount);
+    updateLineCount();
+    
+    // Console functions
+    const consoleContainer = document.getElementById("consoleContainer");
+    
+    function appendToConsole(message, type = "log") {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      const line = document.createElement("div");
+      line.className = `console-item ${type}`;
+      
+      let icon = "";
+      switch(type) {
+        case "info": icon = '<i class="fas fa-info-circle"></i>'; break;
+        case "warn": icon = '<i class="fas fa-exclamation-triangle"></i>'; break;
+        case "error": icon = '<i class="fas fa-times-circle"></i>'; break;
+        case "success": icon = '<i class="fas fa-check-circle"></i>'; break;
+        default: icon = '<i class="fas fa-angle-right"></i>';
+      }
+      
+      line.innerHTML = `<span class="console-time">[${timeString}]</span> ${icon} ${message}`;
+      consoleContainer.appendChild(line);
+      consoleContainer.scrollTop = consoleContainer.scrollHeight;
+    }
+    
+    function clearConsole() {
+      consoleContainer.innerHTML = "";
+      appendToConsole("Console cleared", "info");
+    }
+    
+    // Code execution via Fengari
+    function overrideLuaPrint(L) {
+      const lua = fengari.lua, to_jsstring = fengari.to_jsstring;
+      lua.lua_pushcfunction(L, function(L) {
+        const n = lua.lua_gettop(L), out = [];
+        for (let i = 1; i <= n; i++) {
+          if (lua.lua_isstring(L, i))
+            out.push(to_jsstring(lua.lua_tostring(L, i)));
+          else {
+            out.push(lua.luaL_tolstring(L, i));
+            lua.lua_pop(L, 1);
+          }
+        }
+        appendToConsole(out.join("\t"), "log");
+        return 0;
+      });
+      lua.lua_setglobal(L, fengari.to_luastring("print"));
+    }
+    
+    function overrideLuaWarn(L) {
+      const lua = fengari.lua, to_jsstring = fengari.to_jsstring;
+      lua.lua_pushcfunction(L, function(L) {
+        const n = lua.lua_gettop(L), out = [];
+        for (let i = 1; i <= n; i++) {
+          if (lua.lua_isstring(L, i))
+            out.push(to_jsstring(lua.lua_tostring(L, i)));
+          else {
+            out.push(lua.luaL_tolstring(L, i));
+            lua.lua_pop(L, 1);
+          }
+        }
+        appendToConsole(out.join("\t"), "warn");
+        return 0;
+      });
+      lua.lua_setglobal(L, fengari.to_luastring("warn"));
+    }
+    
+    function runCode() {
+      clearConsole();
+      const startTime = performance.now();
+      
+      try {
+        const code = editor.getValue();
+        const L = fengari.lauxlib.luaL_newstate();
+        fengari.lualib.luaL_openlibs(L);
+        overrideLuaPrint(L);
+        overrideLuaWarn(L);
+        
+        const loadStatus = fengari.lauxlib.luaL_loadstring(L, fengari.to_luastring(code));
+        if (loadStatus === fengari.lua.LUA_OK) {
+          const callStatus = fengari.lua.lua_pcall(L, 0, fengari.lua.LUA_MULTRET, 0);
+          if (callStatus !== fengari.lua.LUA_OK) {
+            const errMsg = fengari.lua.lua_tojsstring(L, -1);
+            appendToConsole(errMsg, "error");
+          } else {
+            const endTime = performance.now();
+            const execTime = (endTime - startTime).toFixed(2);
+            appendToConsole(`Code executed successfully in ${execTime}ms`, "success");
+            document.getElementById("lastRun").textContent = `${execTime}ms`;
+          }
+        } else {
+          const errMsg = fengari.lua.lua_tojsstring(L, -1);
+          appendToConsole(errMsg, "error");
+        }
+      } catch(e) {
+        appendToConsole(`Fatal error: ${e.message}`, "error");
+      }
+    }
+    
+    // Code formatting
+    function formatCode() {
+      const code = editor.getValue();
+      try {
+        const formatted = js_beautify(code, {
+          indent_size: 2,
+          indent_char: " ",
+          max_preserve_newlines: 2,
+          preserve_newlines: true,
+          keep_array_indentation: false,
+          break_chained_methods: false,
+          indent_scripts: "normal",
+          brace_style: "collapse",
+          space_before_conditional: true,
+          unescape_strings: false,
+          jslint_happy: false,
+          end_with_newline: true,
+          wrap_line_length: 0,
+          indent_empty_lines: false,
+          e4x: false,
+          comma_first: false
+        });
+        editor.setValue(formatted);
+        appendToConsole("Code formatted successfully", "success");
+      } catch(e) {
+        appendToConsole(`Formatting error: ${e.message}`, "error");
+      }
+    }
+    
+    // Remove comments from code
+    function removeComments() {
+      let code = editor.getValue();
+      try {
+        // Remove single line comments (-- ...)
+        code = code.replace(/--.*$/gm, "");
+        // Remove multi-line comments (--[[ ... ]]--)
+        code = code.replace(/--\[\[[\s\S]*?\]\]--?/g, "");
+        // Remove empty lines
+        code = code.replace(/^\s*[\r\n]/gm, "");
+        editor.setValue(code);
+        appendToConsole("All comments removed from code", "success");
+      } catch(e) {
+        appendToConsole(`Error removing comments: ${e.message}`, "error");
+      }
+    }
+    
+    // Download code
+    function downloadCode() {
+      const code = editor.getValue();
+      const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "code.lua";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+      appendToConsole("Code downloaded as code.lua", "info");
+    }
+    
+    // Enhanced obfuscation functions
+    function generateRandomKey(length = 32) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+      let key = "";
+      for (let i = 0; i < length; i++) {
+        key += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return key;
+    }
+    
+    function rc4Encrypt(key, data) {
+      let s = [], j = 0, x, res = "";
+      for (let i = 0; i < 256; i++) s[i] = i;
+      for (let i = 0; i < 256; i++) {
+        j = (j + s[i] + key.charCodeAt(i % key.length)) % 256;
+        x = s[i];
+        s[i] = s[j];
+        s[j] = x;
+      }
+      i = 0; j = 0;
+      for (let y = 0; y < data.length; y++) {
+        i = (i + 1) % 256;
+        j = (j + s[i]) % 256;
+        x = s[i];
+        s[i] = s[j];
+        s[j] = x;
+        res += String.fromCharCode(data.charCodeAt(y) ^ s[(s[i] + s[j]) % 256]);
+      }
+      return res;
+    }
+    
+    function toHex(str) {
+      let hex = "";
+      for (let i = 0; i < str.length; i++) {
+        hex += ("0" + str.charCodeAt(i).toString(16)).slice(-2);
+      }
+      return hex;
+    }
+    
+    function base64Encode(str) {
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+      }));
+    }
+    
+    function stringToCharcodeArray(str) {
+      const arr = [];
+      for (let i = 0; i < str.length; i++) {
+        arr.push(str.charCodeAt(i));
+      }
+      return arr;
+    }
+    
+    function generateObfuscatedLoader(level, key, encryptedData) {
+      const loaders = {
+        light: `local k="${key}"local d=load;local f=string.char;local e=function(s)local r=""for i=1,#s,2 do r=r..f(tonumber(s:sub(i,i+1),16))end;return r end;d(e("${encryptedData}"))()`,
+        
+        medium: `local _={[([[${key}]]:gsub(".",function(c)return c end))]=true}local a,b=pcall(function()local c=([[${encryptedData}]]:gsub("..",function(d)return string.char(tonumber(d,16))end))load(c)()end)if not a then print(b)end`,
+        
+        heavy: `(function()local a=table.concat;local b=string.char;local c=tonumber;local d=function(e)local f={}for g=1,#e,2 do f[#f+1]=b(c(e:sub(g,g+1),16))end;return a(f)end;local h="${key}";local i=d("${encryptedData}");local j,k=pcall(load,i)if not j then error(k)end end)()`
+      };
+      
+      return loaders[level] || loaders.medium;
+    }
+    
+    function obfuscateCode(level = "medium") {
+      const code = editor.getValue().trim();
+      if (!code) {
+        appendToConsole("No code to obfuscate!", "error");
+        return;
+      }
+      
+      const btn = document.querySelector(`button[onclick="obfuscateCode('${level}')"]`);
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i class="fas fa-lock"></i> Obfuscating <span class="spinner"></span>`;
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        try {
+          // Remove comments and whitespace
+          let processedCode = code.replace(/--.*$/gm, "")
+                                .replace(/--\[\[[\s\S]*?\]\]--?/g, "")
+                                .replace(/^\s*[\r\n]/gm, "")
+                                .replace(/\s+/g, " ")
+                                .trim();
+          
+          // Generate random key for each obfuscation
+          const key = generateRandomKey();
+          
+          // Encrypt the code
+          const encrypted = rc4Encrypt(key, processedCode);
+          const hexEncoded = toHex(encrypted);
+          
+          // Generate obfuscated loader
+          const obfuscatedCode = generateObfuscatedLoader(level, key, hexEncoded);
+          
+          // Display in editor with typing effect
+          editor.setValue("");
+          let i = 0;
+          const chunkSize = level === "heavy" ? 50 : 100;
+          const interval = setInterval(() => {
+            if (i < obfuscatedCode.length) {
+              editor.setValue(obfuscatedCode.substring(0, i + chunkSize));
+              i += chunkSize;
+            } else {
+              clearInterval(interval);
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+              appendToConsole(`Code obfuscated with ${level} protection`, "success");
+            }
+          }, 10);
+        } catch(e) {
+          appendToConsole(`Obfuscation failed: ${e.message}`, "error");
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      }, 100);
+    }
+    
+    // Load sample code
+    editor.setValue(`-- VOIDSHIELD PRO - Advanced Lua Editor & Obfuscator
+-- Try running this code or experimenting with the obfuscation tools
+
+local function greet(name)
+  print("Hello, " .. name .. "!")
+end
+
+local function calculate(a, b)
+  local sum = a + b
+  local product = a * b
+  return sum, product
+end
+
+-- Main program
+local name = "Developer"
+greet(name)
+
+local x, y = 10, 20
+local s, p = calculate(x, y)
+
+print(string.format("Sum: %d, Product: %d", s, p))
+
+-- Try the different obfuscation levels:
+-- Light: Basic protection
+-- Medium: Strong protection (recommended)
+-- Heavy: Maximum protection (may impact performance)
+`, -1);
+  </script>
+</body>
+</html>
