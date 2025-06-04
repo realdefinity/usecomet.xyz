@@ -894,22 +894,104 @@
         align-items: center;
       }
     }
+  /* Status Button Styles (specific to button-status only) */
+  .button-status {
+    background: rgba(232, 37, 7, 0.1) !important;
+    border: 1px solid rgba(232, 37, 7, 0.2) !important;
+    color: #ff6b6b !important;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .button-status:hover {
+    background: rgba(232, 37, 7, 0.15) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(232, 37, 7, 0.2);
+  }
+
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+  }
+
+  .status-indicator.offline {
+    background: #F44336;
+    box-shadow: 0 0 0 0 rgba(232, 37, 7, 0.7);
+    animation: pulse-offline 2s infinite;
+  }
+
+  @keyframes pulse-offline {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(232, 37, 7, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(232, 37, 7, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(232, 37, 7, 0); }
+  }
+
+  /* Discord Button Styles (specific to button-discord only) */
+  .button-discord {
+    background: rgba(114, 137, 218, 0.2) !important;
+    border: 1px solid rgba(114, 137, 218, 0.3) !important;
+    color: #b8c4ff !important;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .button-discord:hover {
+    background: rgba(114, 137, 218, 0.3) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(114, 137, 218, 0.2);
+    color: #ffffff !important;
+  }
+
+  .button-discord i {
+    transition: transform 0.3s ease;
+  }
+
+  .button-discord:hover i {
+    animation: float 1.5s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
+  /* Shared Nav Button Styles */
+  .nav-button {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-decoration: none;
+  }
   </style>
 </head>
 <body>
   <div id="stars-container"></div>
   
   <!-- Top Navigation Buttons -->
-  <div class="top-nav-buttons">
-    <a class="nav-button button-status" href="https://usecomet.xyz/status">
-      <span class="status-indicator"></span>
-      <span>Status</span>
-    </a>
-    <a class="nav-button button-discord" href="https://discord.gg/qeFQ57eqtj">
-      <i class="fab fa-discord"></i> 
-      <span>Discord</span>
-    </a>
-  </div>
+<div class="top-nav-buttons">
+  <a class="nav-button button-status" href="https://usecomet.xyz/status">
+    <span class="status-indicator offline"></span>
+    <span>Status</span>
+  </a>
+  <a class="nav-button button-discord" href="https://discord.gg/qeFQ57eqtj">
+    <i class="fab fa-discord"></i> 
+    <span>Discord</span>
+  </a>
+</div>
   
   <!-- Hero Section -->
   <section class="hero">
